@@ -3,7 +3,7 @@ library(synapseClient)
 synapseLogin()
 
 allfiles<-synQuery("select name,id from entity where parentId=='syn6015781'")
-metadata=read.table(synGet(allfiles$entity.id[grep('metadata',allfiles$entity.name)])@filePath,sep='\t',header=T,as.is=T)
+metadata=read.table(synGet("syn6023670")@filePath,sep='\t',header=T,as.is=T)
 
 gene.quants<-metadata[intersect(grep('tsv',metadata$File.format),grep('gene',metadata$Output.type)),]
 
@@ -79,19 +79,8 @@ synStore(File('grch38AlignedFPKMs.csv',parentId='syn6035836'),
          executed=list(list(url=cf)),
          used=lapply(synids[grch38.tsvs],function(x) list(entity=x)))
 
-gene.names<-union(rownames(hg19.tpm.mat),rownames(grch38.tpm.mat))
+#gene.names<-union(rownames(hg19.tpm.mat),rownames(grch38.tpm.mat))
 
-gene.base<-unique(sapply(gene.names, function(x) unlist(strsplit(x,split='.',fixed=T))[1]))
+#gene.base<-unique(sapply(gene.names, function(x) unlist(strsplit(x,split='.',fixed=T))[1]))
 #write.table(gene.names,quote=F,row.names=F,col.names=F,file='ensemblGeneNames.txt')
-
-require(biomaRt)
-ensembl=useMart("ENSEMBL_MART_ENSEMBL",dataset="hsapiens_gene_ensembl",host='www.ensembl.org')
-filters = listFilters(ensembl)
-attributes = listAttributes(ensembl)
-
-epep="ensembl_gene_id"
-egene='hgnc_symbol'
-gene.mapping<-getBM(attributes=c(epep,egene),filters=c(epep),values=gene.base,mart=ensembl)
-
-
 
