@@ -26,7 +26,7 @@ getCountsFromTable<-function(tab,mutationType=c('germline','somatic'),effect="HI
   
  # if(!includeSilent)
   #  tab <- tab[which(tab$Mutation_Type!='Silent'),]
-  tab$Patient=sapply(tab$Sample,function(x) paste(unlist(strsplit(x,split='_'))[1:2],collapse='_'))
+  tab$Patient=sapply(tab$Sample,function(x) paste(unlist(strsplit(as.character(x),split='_'))[1:2],collapse='_'))
   #mut.idx = which(sapply(tab$Mutation_Status,tolower)%in%mutationType)
   tab <- subset(tab,Effect%in%unlist(strsplit(effect,split='_'))&&Status%in%mutationType)
   
@@ -36,7 +36,7 @@ getCountsFromTable<-function(tab,mutationType=c('germline','somatic'),effect="HI
   else
     num.patnets = tab%>% group_by(Gene)%>%summarize(Patients=n_distinct(Patient))
   
-  fname= paste(prefix,paste(mutationType,collapse='_and_'),'mutationsWith',effect,'effectNum',sampOrPat,'perGene.txt',sep='')  
+  fname= paste(prefix,paste(mutationType,collapse='_and_'),'mutationsWith',effect,'effectNum',sampOrPat,'perGene.tab',sep='')  
   write.table(num.patients,file=fname,col.names=F,row.names=F,quote=F)
   return(fname)
 }
@@ -52,7 +52,7 @@ for(mutType in c(c('Germline'),c("StrongSomatic","LikelySomatic"),c("StrongSomat
   
 }
 
-this.script=''
+this.script='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/bin/formatHotnetDataFromVardict.R'
 for(f in files){
-  synStore(File(f,parentId='syn6128017'),executed=list(list(url='')))
+  synStore(File(f,parentId='syn6128017'),executed=list(list(url=this.script)))
 }
