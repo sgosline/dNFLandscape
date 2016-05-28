@@ -6,7 +6,7 @@ source("../../bin/wgsAnalysis.R")
 ##let's delineate all the tests we need to do
 effects=c("HIGH","HIGH_MODERATE_LOW","HIGH_MODERATE")
 write(as.character(unique(expr.gene.muts1$Gene)),file='allGeneBG.txt')
-
+f0='allGeneBG.txt'
 for(e in effects){
   p05_mutcounts<-getMutsAcrossGenes(expr.gene.muts05,effect=unlist(strsplit(e,split='_')),germLine=c("Germline"),
                                     som=c("LikelySomatic",'StrongSomatic'))
@@ -38,3 +38,22 @@ for(e in effects){
   write(com.so.1,f4)
   
 }
+this.script='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-05-27/mutPathwayLists.R'
+for(f in c(f1,f2,f3,f4,f0))
+  synStore(File(f,parentId='syn6128017'),executed=list(list(url=this.script)))
+
+##now leverage thaneer's code? 
+GENE.SETS_ID = 'syn4867851'
+ALL_USED_IDs = GENE.SETS_ID
+
+load(synGet(GENE.SETS_ID)@filePath)
+
+##now create huge table of all the enrichment for each set of genes!!!
+res=do.call('rbind',lapply(names(GeneSets),function(geneSetClass){
+    tlist<-lapply(names(GeneSets[[geneSetClass]]),function(geneSetName){
+      genes=GeneSets[[geneSetClass]][[geneSetName]]
+      fg=''
+      bg=''
+      
+    })
+}))

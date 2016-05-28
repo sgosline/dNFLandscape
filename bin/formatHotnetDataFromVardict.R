@@ -43,7 +43,7 @@ getCountsFromTable<-function(tab,mutationType=c('germline','somatic'),effect="HI
 }
 
 files=c()
-for(mutType in c(c('Germline'),c("StrongSomatic","LikelySomatic"),c("StrongSomatic","LikelySomatic","StrongLOH","LikelyLOH"))){
+for(mutType in list(c('Germline'),c("StrongSomatic","LikelySomatic"),c("StrongSomatic","LikelySomatic","StrongLOH","LikelyLOH"))){
 #mutType<-'germline'
  for(mt in c("HIGH","HIGH_MODERATE","HIGH_MODERATE_LOW")){
       files=c(files,getCountsFromTable(expr.gene.muts05,mutationType=mutType,effect=mt,sampOrPat=ifelse(length(mutType)==1,'patient','sample'),prefix='p05'))
