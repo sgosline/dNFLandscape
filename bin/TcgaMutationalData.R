@@ -16,8 +16,8 @@ toPatientId<-function(vec){
 
 
 if(!exists('combinedMaf')){
-  df1.2.maf<-gsub('.gz','',synGet('syn4924181')@filePath)
-  combinedMaf<-as.data.frame(fread(df1.2.maf))
+  df1.2.maf<-synGet('syn4924181')@filePath
+  combinedMaf<-read.table(gzfile(df1.2.maf),sep='\t',header=T)
   combinedMaf$Patient<-toPatientId(combinedMaf$Tumor_Sample_Barcode)
 }
 

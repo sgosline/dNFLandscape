@@ -32,7 +32,7 @@ getMutationStatsForGene<-function(expr.gene.muts,gene='NF1',doPlot=FALSE,effect=
   fname=''
   if(doPlot){
     require(ggplot2)
-    sdf$Amino_Acid_Change<-sapply(sdf$Amino_Acid_Change,function(x) if(nchar(as.character(x))>20) strtrim(as.character(x),20) else x)
+    sdf$Amino_Acid_Change<-sapply(as.character(sdf$Amino_Acid_Change),function(x) if(nchar(as.character(x))>20) strtrim(as.character(x),20) else x)
     for(t1 in transcripts){
       tdf<-subset(sdf,Transcript==t1)
       #plot all
@@ -83,12 +83,12 @@ plotMutsAcrossSamples<-function(sdf,samples=TRUE,minVal,prefix=''){
   sdf$Patient<-sapply(sdf$Sample,function(x) paste(unlist(strsplit(as.character(x),split='_'))[1:2],collapse='_'))
   if(samples){
     prefix=paste(prefix,'_samples',sep='')
-    mat<-reshape2::acast(sdf,Sample~Gene,value.var="Present",fun.aggregate=mean,fill=0)
+    mat<-reshape2::acast(sdf,Gene~Sample,value.var="Present",fun.aggregate=mean,fill=0)
   }else{
-    mat<-reshape2::acast(sdf,Patient~Gene,value.var="Present",fun.aggregate=mean,fill=0)
+    mat<-reshape2::acast(sdf,Gene~Patient,value.var="Present",fun.aggregate=mean,fill=0)
     prefix=paste(prefix,'_patients',sep='')
   }
-  mat=mat[,which(colSums(mat)>=minVal)]
+  mat=mat[which(rowSums(mat)>=minVal),]
   fname=paste(prefix,'WithAtLeast',minVal,'mutations.png',sep='')
   pheatmap(mat,cluster_rows=T,cluster_cols=T,filename = fname, cellheight=10,cellwidth=10)
   return(list(genes=colnames(mat),file=fname))
