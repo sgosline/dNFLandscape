@@ -78,6 +78,10 @@ library(ggplot2)
 # write.table(pa.tab,file=paste('diffExGenesBetweenDermalAndPolyAENCODE_exprOnly.txt',sep=''))
 require(dplyr)
 marco.list<-read.csv('NF1_NF2_TargetsFromLitv1.csv',header=T)
+
+synStore(File('NF1_NF2_TargetsFromLitv1.csv',parentId='syn6242409'))
+
+
 non.blank<-subset(marco.list,GeneName!="")[,1:4]
 
 with.nf<-marco.list %>% mutate(NF1=Disease=='NF1',NF2=Disease=="NF2") %>% select(GeneName,Symptom,NF1,NF2)
@@ -129,3 +133,7 @@ pheatmap(norm.dermals[intersect(rownames(nf2.genes),rownames(norm.dermals)),],ce
        #  annotation_col=select(pat.df,Source),
          annotation_row=nf2.genes,file='NF2_only_GenesInNFOnlyData.png',height=10)
 
+for(fi in list.files('./')[grep('png',list.files('./'))]){
+  synStore(File(fi,parentId='syn6242409'),used=list(list(entity='syn6242733')),
+           executed=list(list(url='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-07-05/encodeSkinAnalysis_ExprOnly.R')))
+}
