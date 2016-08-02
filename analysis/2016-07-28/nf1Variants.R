@@ -10,6 +10,19 @@ getNf1RegionFromMaf<-function(maffile,synid){
   return(tab)
 }
 
+#'vardict mafs are too big for gzfile and read.table
+require(data.table)
+library(R.utils)
+getNf1RegionFromFullMaf<-function(maffile,synid){
+    gzf<-synGet(synid,downloadFile=F)@filePath
+    if(!file.exists(gsub('.gz','',gzf))){
+      gzf<-synGet(synid,downloadFile=T)@filePath
+      gunzip(gzf)
+    }
+    tab<-subset(fread(gsub('.gz','',gzf)),Gene=='NF1')
+    tab
+}
+
 ##mafs are in different directories
 #vardict.sid='syn6022474'
 #mutect.sid='syn6186823'
@@ -38,7 +51,7 @@ varscan.mods<-varscan.tab%>%filter(FILTER=='PASS')#%>%filter(IMPACT!='MODIFIER')
 varscan.mods$DetectionTool=rep('VarScan',nrow(varscan.mods))
 
 vardict.tab<-do.call('rbind',apply(vardict.mafs,1,function(x){
-  getNf1RegionFromMaf(x[[1]],x[[2]])
+  getNf1RegionFromFullMaf(x[[1]],x[[2]])
 }))
 
 vardict.mods<-vardict.tab%>%filter(FILTER=='PASS')%>%filter(IMPACT!='MODIFIER')
