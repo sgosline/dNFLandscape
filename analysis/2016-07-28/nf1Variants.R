@@ -58,7 +58,7 @@ vardict.tab<-do.call('rbind',apply(vardict.mafs,1,function(x){
   getNf1RegionFromFullMaf(x[[1]],x[[2]])
 }))
 
-vardict.mods<-vardict.tab%>%filter(FILTER=='PASS')%>%filter(IMPACT!='MODIFIER')
+vardict.mods<-vardict.tab%>%filter(PASS=='TRUE')%>%filter(IMPACT!='MODIFIER')
 vardict.mods$DetectionTool=rep("VarDict",nrow(vardict.mods))
 
 allmods<-rbind(varscan.mods,mutect.mods,vardict.mods)
@@ -75,7 +75,7 @@ allmods$DNAPos<-as.numeric(sapply(allmods$HGVSc,function(x) {
 library(ggplot2)
 #ggplot(allmods)+geom_jitter(aes(x=DNAPos,y=Sample,color=DetectionTool),width=0)+theme(axis.text.x = element_text(angle = 90, hjust = 1))+facet_grid(. ~ IMPACT)
 
-##now get proper patient/tumor number           
+##now get proper patient/tumor number
 tum.map<-synTableQuery('SELECT distinct Patient,TumorNumber,WGS FROM syn5556216 where WGS is not NULL')@values
 allmods$PatientTumor<-sapply(allmods$Sample,function(x){
   vals<-unlist(strsplit(x,split='_'))
@@ -89,4 +89,3 @@ ggplot(allmods%>%filter(IMPACT!='MODIFIER'))+geom_jitter(aes(x=DNAPos,y=PatientT
 ggsave("NF1SomaticMutations.png")
 synStore(File("NF1SomaticMutations.png",parentId='syn6126468'))
 ##takeas a long time since these are full files
-
