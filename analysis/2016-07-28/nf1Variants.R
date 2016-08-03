@@ -15,12 +15,16 @@ require(data.table)
 library(R.utils)
 getNf1RegionFromFullMaf<-function(maffile,synid){
    # gzf<-synGet(synid,downloadFile=F)@filePath
-  #  if(!file.exists(gsub('.gz','',gzf))){
       gzf<-synGet(synid,downloadFile=T)@filePath
+    if(!file.exists(gsub('.gz','',gzf))){
       gunzip(gzf)
-  #  }
-    tab<-subset(fread(gsub('.gz','',gzf)),Gene=='NF1')
-    tab
+    }
+     tab<-NULL
+    try(tab<-fread(gsub('.gz','',gzf)))
+    if(!is.null(tab))
+	tab<-subset(tab,Gene=="NF1")
+    else
+	return(NULL)
 }
 
 ##mafs are in different directories
