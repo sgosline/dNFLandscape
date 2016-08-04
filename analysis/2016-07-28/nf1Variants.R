@@ -38,7 +38,9 @@ mutect.mafs<-synQuery("select Id,name from entity where parentId=='syn6186823'")
 varscan.mafs<-synQuery("select Id,name from entity where parentId=='syn6834373'")
 require(dplyr)
 mutect.tab<-do.call('rbind',apply(mutect.mafs,1,function(x){
-  getNf1RegionFromMaf(x[[1]],x[[2]])
+    res<-getNf1RegionFromMaf(x[[1]],x[[2]])
+    colnames(res)[which(colnames(res)=='Effect')]<-'IMPACT'
+    colnames(res)[which(colnames(res)=='cDNA_Change')]<-'HGVSc'
     }))
 
 mutect.tab$Sample<-sapply(mutect.tab$Sample,function(x) unlist(strsplit(x,split='.snp'))[1])
@@ -58,7 +60,7 @@ vardict.tab<-do.call('rbind',apply(vardict.mafs,1,function(x){
   getNf1RegionFromFullMaf(x[[1]],x[[2]])
 }))
 
-vardict.mods<-vardict.tab%>%filter(PASS=='TRUE')%>%filter(Effect!='MODIFIER')
+vardict.mods<-vardict.tab%>%filter(PASS=='TRUE') #%>%filter(Effect!='MODIFIER')
 vardict.mods$DetectionTool=rep("VarDict",nrow(vardict.mods))
 
 allmods<-rbind(varscan.mods,mutect.mods,vardict.mods)
@@ -67,11 +69,24 @@ allmods<-rbind(varscan.mods,mutect.mods,vardict.mods)
 allmods$DNAPos<-as.numeric(sapply(allmods$HGVSc,function(x) {
   gs<-gsub('c.','',x,fixed=T)
   gs<-gsub('*','',gs,fixed=T)
-  gs2<-unlist(strsplit(gs,"N",fixed=T))[1]
+  gs2<-unlist(strsplit(gs,"N|C|A|T|G",fixed=F))[1]
   gs3<-unlist(strsplit(gs2,"-",fixed=T))[1]
   gs4<-unlist(strsplit(gs3,"+",fixed=T))[1]
   gs5<-unlist(strsplit(gs4,'_',fixed=T))[1]
   gs5}))
+
+
+##now update the vardictmods
+## vardict.mods$DNAPos<-as.numeric(sapply(vardict.mods$cDNA_Change,function(x){
+##   gs<-gsub('c.','',x,fixed=T)
+##   gs<-gsub('*','',gs,fixed=T)
+##   gs2<-unlist(strsplit(gs,"N|C|T|A|G",fixed=F))[1]
+##   gs3<-unlist(strsplit(gs2,"-",fixed=T))[1]
+##   gs4<-unlist(strsplit(gs3,"+",fixed=T))[1]
+##   gs5<-unlist(strsplit(gs4,'_',fixed=T))[1]
+##   gs5
+## }))
+
 library(ggplot2)
 #ggplot(allmods)+geom_jitter(aes(x=DNAPos,y=Sample,color=DetectionTool),width=0)+theme(axis.text.x = element_text(angle = 90, hjust = 1))+facet_grid(. ~ IMPACT)
 
