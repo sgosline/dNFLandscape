@@ -39,8 +39,7 @@ varscan.mafs<-synQuery("select Id,name from entity where parentId=='syn6834373'"
 require(dplyr)
 mutect.tab<-do.call('rbind',apply(mutect.mafs,1,function(x){
     res<-getNf1RegionFromMaf(x[[1]],x[[2]])
-    colnames(res)[which(colnames(res)=='Effect')]<-'IMPACT'
-    colnames(res)[which(colnames(res)=='cDNA_Change')]<-'HGVSc'
+res
     }))
 
 mutect.tab$Sample<-sapply(mutect.tab$Sample,function(x) unlist(strsplit(x,split='.snp'))[1])
@@ -57,7 +56,10 @@ varscan.mods<-varscan.tab%>%filter(FILTER=='PASS')#%>%filter(IMPACT!='MODIFIER')
 varscan.mods$DetectionTool=rep('VarScan',nrow(varscan.mods))
 
 vardict.tab<-do.call('rbind',apply(vardict.mafs,1,function(x){
-  getNf1RegionFromFullMaf(x[[1]],x[[2]])
+    res<-getNf1RegionFromFullMaf(x[[1]],x[[2]])
+        colnames(res)[which(colnames(res)=='Effect')]<-'IMPACT'
+    colnames(res)[which(colnames(res)=='cDNA_Change')]<-'HGVSc'
+    res
 }))
 
 vardict.mods<-vardict.tab%>%filter(PASS=='TRUE') #%>%filter(Effect!='MODIFIER')
