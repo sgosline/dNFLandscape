@@ -58,7 +58,7 @@ vardict.tab<-do.call('rbind',apply(vardict.mafs,1,function(x){
   getNf1RegionFromFullMaf(x[[1]],x[[2]])
 }))
 
-vardict.mods<-vardict.tab%>%filter(PASS=='TRUE')%>%filter(IMPACT!='MODIFIER')
+vardict.mods<-vardict.tab%>%filter(PASS=='TRUE')%>%filter(Effect!='MODIFIER')
 vardict.mods$DetectionTool=rep("VarDict",nrow(vardict.mods))
 
 allmods<-rbind(varscan.mods,mutect.mods,vardict.mods)
