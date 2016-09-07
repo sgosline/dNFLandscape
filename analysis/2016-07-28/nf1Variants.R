@@ -65,7 +65,9 @@ vardict.tab<-do.call('rbind',apply(vardict.mafs,1,function(x){
 vardict.mods<-vardict.tab%>%filter(PASS=='TRUE') #%>%filter(Effect!='MODIFIER')
 vardict.mods$DetectionTool=rep("VarDict",nrow(vardict.mods))
 
-allmods<-rbind(varscan.mods,mutect.mods,vardict.mods)
+allmods<-rbind(varscan.mods,mutect.mods)
+comm.cols<-intersect(colnames(allmods),colnames(vardict.mods))
+allmods<-rbind(allmods[,comm.cols],unique(data.frame(vardict.mods)[,comm.cols]))
 
 ##get dna position of mutation
 allmods$DNAPos<-as.numeric(sapply(allmods$HGVSc,function(x) {
@@ -103,6 +105,6 @@ allmods$PatientTumor<-sapply(allmods$Sample,function(x){
 
 
 ggplot(allmods%>%filter(IMPACT!='MODIFIER'))+geom_jitter(aes(x=DNAPos,y=PatientTumor,shape=DetectionTool,color=IMPACT))+theme(axis.text.x = element_text(angle = 90, hjust = 1))#+facet_grid(. ~ IMPACT)
-ggsave("NF1SomaticMutations.png")
-synStore(File("NF1SomaticMutations.png",parentId='syn6126468'))
+ggsave("NF1SomaticMutations.pdf")
+synStore(File("NF1SomaticMutations.pdf",parentId='syn6126468'))
 ##takeas a long time since these are full files
