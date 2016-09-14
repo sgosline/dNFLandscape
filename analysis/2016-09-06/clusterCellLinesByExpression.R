@@ -79,6 +79,6 @@ ggsave('tcga_dermalNF_samps_pca23.png')
 
 for(f in list.files('.','.png'))
   synStore(File(f,parentId='syn5821631'),
-           executed=list(list(url=''),list(url='')))
+           executed=list(list(url='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-09-06/clusterCellLinesByExpression.R')))
 
 #synStore(File('ccle_pnf_cor_dendrogram.pdf',parentId='syn5594111'),executed=list(list(url='https://raw.githubusercontent.com/sgosline/pnfCellLines/master/analysis/2016-08-12/clusterCellLinesByExpression.R')),used=list(list(entity='syn5580347')))
