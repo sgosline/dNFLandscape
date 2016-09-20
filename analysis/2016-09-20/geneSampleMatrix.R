@@ -1,0 +1,32 @@
+#get gene mutation matrix - all genes by all samples!!!
+library(synapseClient)
+synapseLogin()
+
+library(dplyr)
+if(!exists('fullfile'))
+  fullfile<-read.table(synGet('syn6097853')@filePath,sep='\t',header=T)
+
+#do one table query of tumor numbers
+tum.nums<-synTableQuery(paste("SELECT TumorNumber,WGS FROM syn5556216 where WGS is not NULL"))@values
+getTumorNumber<-function(sampname){
+  wgs=unlist(strsplit(sampname,split='_'))[4]
+  tn<-tum.nums$TumorNumber[match(wgs,tum.nums$WGS)]
+  return(gsub(wgs,tn,sampname))
+}
+
+somaticGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH")){
+    som.muts<-filter(muts,Status%in%c('LikelySomatic','StrongSomatic'))%>%filter(Effect%in%effect)
+    samp.gene<-reshape2::acast(som.muts,Gene~Sample)
+    colnames(samp.gene)<-sapply(colnames(samp.gene),getTumorNumber)
+    
+    bin.mat<-samp.gene>0
+    return(bin.mat)
+}
+
+germlineGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH")){
+  gl.muts<-filter(muts,Status=='Germline')%>%filter(Effect%in%effect)
+  samp.gene<-reshape2::acast(gl.muts,Gene~Sample)
+  colnames(samp.gene)<-sapply(colnames(samp.gene),getTumorNumber)
+  bin.mat<-samp.gene>0
+  return(bin.mat)
+}

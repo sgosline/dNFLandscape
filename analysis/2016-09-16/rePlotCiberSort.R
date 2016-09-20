@@ -28,7 +28,7 @@ sampleIds<-sapply(cs.res$Input.Sample,function(x){
 rownames(cs.res)<-sampleIds
 cs.res<-cs.res[,-1]
 
-this.file=''
+this.file='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-09-16/rePlotCiberSort.R'
 library(pheatmap)
 pheatmap(cs.res[,1:22],annotation_row=cs.res[,23:25],cellheight=10,cellwidth = 10,filename='ciberSortRePlotted.png')
 synStore(File('ciberSortRePlotted.png',parentId='syn5809348'),executed=list(list(url=this.file)))

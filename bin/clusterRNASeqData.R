@@ -5,7 +5,7 @@
 #'
 #'
 
-source("../../bin/dermalNFData.R")
+source("../../dermalNF/bin/dermalNFData.R")
 
 library(WGCNA)
 options(stringsAsFactors = FALSE)
