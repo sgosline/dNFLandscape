@@ -24,7 +24,8 @@ calcWilcoxonEnrichment<-function(mut.matrix,eigenGenes){
   return(gene.vals)
   }
 
-
+this.script='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-09-20/calcMutEnrichment.R'
+mut.script='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-09-20/geneSampleMatrix.R'
 library(ggbiplot)
 library(pheatmap)
 iterateOverClusters<-function(){
@@ -45,8 +46,11 @@ iterateOverClusters<-function(){
     rownames(etab)<-patient_tumor_number_rna(rownames(etab),q)
     title=paste('Eigengenes for',s,f,'filtered',q,'measurements')
     ggbiplot(prcomp(etab),groups=sapply(rownames(etab),function(x) paste(unlist(strsplit(x,split=' '))[1:2],collapse=' ')))+ggtitle(title)
-    ggsave(paste(gsub(' ','_',title),'_PCA.png',sep=''))
+    fn=paste(gsub(' ','_',title),'_PCA.png',sep='')
+    ggsave(fn)
+    synStore(File(fn,parentId='syn7256344'),executed=list(list(url=this.script)),used=list(list(entity=eeid)))
     
+    sig.muts<-list(germline=c(),somatic=c())
     for(muts in c('somatic','germline')){
       ##now compute enrichment
       if(muts=='somatic')
@@ -55,10 +59,27 @@ iterateOverClusters<-function(){
         mut.matrix<-germlineGeneSampleMatrix()
       
       pvals<-calcWilcoxonEnrichment(mut.matrix,etab)
+      sig.muts[[muts]]<-apply(pvals,1,function(x) paste(names(which(x<0.05)),collapse=','))
+      
       mtitle<-paste(muts,'Mutations in',title)
-      pheatmap(pvals,main=mtitle,cellwidth=10,cellheight=10,filename=paste(gsub(' ','_',mtitle),'_EnrichmentHeatmap.png',sep=''))
-      }
-      }
+      fn=paste(gsub(' ','_',mtitle),'_EnrichmentPvals.tsv',sep='')
+      write.table(pvals,file=fn,sep='\t')
+      synStore(File(fn,parentId='syn7256344'),executed=list(list(url=this.script),list(url=mut.script)),used=list(list(entity=eeid),list(entity='syn6097853')))
+      
+      fn=paste(gsub(' ','_',mtitle),'_EnrichmentHeatmap.png',sep='')
+      pheatmap(pvals,main=mtitle,cellwidth=10,cellheight=10,filename=fn)
+      synStore(File(fn,parentId='syn7256344'),executed=list(list(url=this.script),list(url=mut.script)),used=list(list(entity=eeid),list(entity='syn6097853')))
+      
+      ##last create a table of all significantly enriched genes per cluster
+      
+    }
+    df<-data.frame(sig.muts)
+    fn=paste(gsub(' ','_',title),'_enrichedMuts.tsv',sep='')
+    write.table(df,file=fn,sep='\t')
+    synStore(File(fn,parentId='syn7256344'),executed=list(list(url=this.script),list(url=mut.script)),used=list(list(entity=eeid),list(entity='syn6097853')))
+    
+    
+          }
     }
   }
 }

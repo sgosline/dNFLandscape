@@ -1,8 +1,8 @@
 source("../../bin/clusterRNASeqData.R")
 
 
-exlist=list(list(url='https://raw.githubusercontent.com/Sage-Bionetworks/dermalNF/master/analysis/2016-03-18/finalWgncaParams.R',wasExecuted=TRUE),
-            list(url='https://raw.githubusercontent.com/Sage-Bionetworks/dermalNF/master/bin/clusterRNASeqData.R',wasExecuted=TRUE))
+exlist=list(list(url='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-09-21/doAllWgcnaPlots.R',wasExecuted=TRUE),
+            list(url='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/bin/clusterRNASeqData.R',wasExecuted=TRUE))
 
 #for(signed in c(FALSE,TRUE)){
 #  for(sd in c(FALSE,TRUE)){
@@ -18,7 +18,7 @@ sd=FALSE
     ##now plot eigen genes for each
     cl.enrich=getEnrichment(cl.clust$expr,cl.clust$tomStatic,cl.clust$TOMprefix,ntop=20)
     cl.eigen=evalEigenModules(cl.clust$expr,colorh1=cl.clust$tomStatic,pids=cl.pids[rownames(cl.clust$expr)],prefix=cl.clust$TOMprefix)
-    write.table(cl.eigen,paste('cuffLinks',ifelse(sd,'sd','conn'),'filtered',ifelse(signed,'signed','unsigned'),'clusterEigenGenes.tab',sep='_'))  
+    write.table(cl.eigen,paste('cuffLinks',ifelse(sd,'sd','conn'),'filtered',ifelse(signed,'signed','unsigned'),'clusterEigenGenes.tab',sep='_'))
 #}
 
 
@@ -27,15 +27,15 @@ go.files=all.files[grep('GO',all.files)]
 
 all.files<- all.files[grep('Cluster',all.files,ignore.case=T)]
 
-fcfiles=c(all.files[grep('*featureCounts*',all.files)],go.files[grep('*featureCounts*',go.files)])
+#fcfiles=c(all.files[grep('*featureCounts*',all.files)],go.files[grep('*featureCounts*',go.files)])
 clfiles=c(all.files[grep('*cuffLinks*',all.files)],go.files[grep('cuffLinks',go.files)])
 
 #now upload feature counts files
 #fcfiles=c('featureCountsWGCNAClustering.pdf','WGCNA_featureCountsTOMClusterAssignment.tsv','featureCountsTOMtop10GOTermsPermodule.csv')
-for(f in fcfiles){
-    synStore(File(f,parentId='syn5669860'), activityName='WGCNA Analysis',
-             used=c(exlist,list(list(entity='syn5051784',wasExecuted=F))))
-}
+#for(f in fcfiles){
+#    synStore(File(f,parentId='syn5669860'), activityName='WGCNA Analysis',
+#             used=c(exlist,list(list(entity='syn5051784',wasExecuted=F))))
+#}
 
 
 
