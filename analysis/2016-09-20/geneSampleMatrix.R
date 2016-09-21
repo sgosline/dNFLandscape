@@ -11,14 +11,14 @@ tum.nums<-synTableQuery(paste("SELECT TumorNumber,WGS FROM syn5556216 where WGS 
 getTumorNumber<-function(sampname){
   wgs=unlist(strsplit(sampname,split='_'))[4]
   tn<-tum.nums$TumorNumber[match(wgs,tum.nums$WGS)]
-  return(gsub(wgs,tn,sampname))
+  return(gsub("_",' ',gsub(wgs,tn,sampname)))
 }
 
 somaticGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH")){
     som.muts<-filter(muts,Status%in%c('LikelySomatic','StrongSomatic'))%>%filter(Effect%in%effect)
     samp.gene<-reshape2::acast(som.muts,Gene~Sample)
     colnames(samp.gene)<-sapply(colnames(samp.gene),getTumorNumber)
-    
+
     bin.mat<-samp.gene>0
     return(bin.mat)
 }
