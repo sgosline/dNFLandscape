@@ -163,13 +163,13 @@ evalEigenModules<-function(datExpr,colorh1,pids=NA,prefix=''){
     if(length(idx)<10)
       next
     pdf(paste(prefix,which.module,'moduleInGeneExpression.pdf',sep=''))
-    par(mfrow=c(2,1), mar=c(0.3, 5.5, 3, 2))
+    par(mfrow=c(2,1), mar=c(0.3, 5.5, 8, 2))
     
-    plotMat(t(scale(datExpr[,idx ]) ),
-            nrgcols=30,rlabels=F,rcols=which.module,clabels=pids,
+    plotMat(t(scale(datExpr[order(ME),idx ]) ),
+            nrgcols=30,rlabels=F,rcols=which.module,clabels=pids[order(ME)],
             main=which.module, cex.main=2)
     par(mar=c(5, 4.2, 0, 0.7))
-    barplot(ME, col=which.module, main="", cex.main=2,
+    barplot(ME[order(ME)], col=which.module, main="", cex.main=2,
             ylab="eigengene expression",xlab="Patient Sample")
     dev.off()
 }

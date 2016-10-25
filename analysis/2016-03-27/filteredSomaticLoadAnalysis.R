@@ -1,6 +1,6 @@
 ##compare TCGA mutational analysis to dermal somatic load
 
-source("../../bin/dermalNFData.R")
+source("../../dermalNF/bin/dermalNFData.R")
 
 require(dplyr)
 require(ggplot2)
@@ -12,14 +12,14 @@ non.silent=subset(all.mutations,Mutation_Type!='Silent')
 
 som.counts=subset(non.silent,Mutation_Status=='Somatic') %>% group_by(Sample_ID) %>% summarize(MutatedGenes=n_distinct(Hugo_Symbol),DistinctMutations=n())
 df=tidyr::gather(som.counts,'SomaticEvent','Count',2:3)
-p<-ggplot(df)+geom_bar(aes(x=Sample_ID,y=Count,fill=SomaticEvent),stat='identity',position='dodge')+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
+#p<-ggplot(df)+geom_bar(aes(x=Sample_ID,y=Count,fill=SomaticEvent),stat='identity',position='dodge')+ theme(axis.text.x = element_text(angle = 90, hjust = 1))
 #som.cancer=subset(subset(non.silent,Hugo_Symbol%in%cancer.gene.muts$Hugo_Symbol),Mutation_Status=='Somatic') %>% group_by(Sample_ID) %>% summarize(MutatedCancerGenes=n_distinct(Hugo_Symbol),DistinctCancerMutations=n_distinct(Protein_Change))
 #df2=tidyr::gather(som.cancer,'SomaticEvent','Count',2:3)
 
 
 ##now get the TCGA data
 source("../../bin/TcgaMutationalData.R")
-all.genes<-read.table('../../data/HugoGIDsToEntrez_DAVID.txt',header=T,as.is=T,sep='\t',quote='"')[,1]
+all.genes<-read.table('../../dermalNF/data/HugoGIDsToEntrez_DAVID.txt',header=T,as.is=T,sep='\t',quote='"')[,1]
 
 non.silent.tcga<-subset(combinedMaf,Variant_Classification!='Silent')
 dft <- non.silent.tcga%>%group_by(Patient)%>%summarize(MutatedGenes=n_distinct(Hugo_Symbol))
@@ -57,10 +57,10 @@ p<-ggplot(edf)+geom_bar(aes(x=Sample_ID,y=Count,fill=SomaticEvent),stat='identit
 
 edft <- non.silent.tcga%>%group_by(Patient)%>%summarize(MutatedGenes=n_distinct(Hugo_Symbol))
 edft$Disease<-non.silent.tcga$tumor_type[match(edft$Patient,non.silent.tcga$Patient)]
-
 edft<-rbind(edft,data.frame(Disease=rep('dermalNF',nrow(expr.som.counts)),Patient=expr.som.counts$Sample_ID,
                           MutatedGenes=expr.som.counts$MutatedGenes))
-p<-ggplot(edft)+geom_boxplot(aes(x=Disease,y=MutatedGenes))+scale_y_log10()+theme(axis.text.x=element_text(angle = -90, hjust = 0))
+
+p<-ggplot(edft)+geom_boxplot(aes(x=reorder(Disease,MutatedGenes,FUN=median),y=MutatedGenes))+scale_y_log10()+theme(axis.text.x=element_text(angle = -90, hjust = 0))
 print(p)
 png('somaticBurdenPereExpressedGene.png')
 print(p)
