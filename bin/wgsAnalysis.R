@@ -1,6 +1,7 @@
 ###plotting of WGS variants
 
 source("../../dermalNF/bin/WGSData_VarDict.R")
+source('../../../dermalNF/bin/dermalNFData.R')
 cancer.genes<-read.csv('../../data/Census_allTue Jan 19 18-58-56 2016.csv')
 if(!exists('expr.gene.muts05'))
   expr.gene.muts05<-subset(read.table(synGet("syn6097853")@filePath,sep='\t'),PASS=='TRUE')
@@ -36,12 +37,14 @@ getMutationStatsForGene<-function(expr.gene.muts,gene='NF1',doPlot=FALSE,effect=
     for(t1 in transcripts){
       tdf<-subset(sdf,Transcript==t1)
       #plot all
-      p<-ggplot(tdf)+geom_jitter(aes(y=Patient,x=Amino_Acid_Change,col=Functional_Class,size=Effect))+facet_grid(.~Status)
+      p<-NULL
+      try(p<-ggplot(tdf)+geom_jitter(aes(y=Patient,x=Amino_Acid_Change,col=Functional_Class,size=Effect))+facet_grid(.~Status))
       #   p  +facet_grid(.~Status)
+      if(!is.null(p)){
       p<-p+theme(axis.text.x = element_text(angle = 90, hjust = 1))+ggtitle(paste('Gene',gene,'Transcript',t1))#+facet_grid(.~Status)
       fname=paste('gene',gene,'transcript',t1,'mutationsByType',prefix,'.png',sep='')
       ggsave(p,file=fname)
-      
+      }      
       #just germline/LOH/Deletion
       p<-ggplot(subset(tdf,Status%in%c('Germline')))+geom_point(aes(y=Patient,x=Amino_Acid_Change,col=Functional_Class,size=Effect))#+facet_grid(.~Status)
       #   p  +facet_grid(.~Status)
