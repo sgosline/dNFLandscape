@@ -27,4 +27,8 @@ full.stats<-sapply(rev(genes.with.more.vars)[1:10],function(gene){
   try(stats<-getMutationStatsForGene(expr.gene.muts1,gene=gene,doPlot=TRUE,effect=c("HIGH"),prefix='p1'))})
 
 
+pngfiles=list.files('.')[grep('png',list.files('.'))]
 
+for(pf in pngfiles){
+  synStore(File(pf,parentId='syn7542129'),used=list(list(entity='syn6099307')),executed=list(list(url=this.script)))
+}
