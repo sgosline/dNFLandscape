@@ -22,6 +22,9 @@ full.map<-cbind(dres,tres)
 
 source('../../bin/encodeSkinRNASeq.R')
 
+full.map$entity.sampleID <- gsub("-", ".", full.map$entity.sampleID, fixed = TRUE)
+full.map$entity.sampleID <- paste("X",full.map$entity.sampleID, sep = "")
+
 sampleIds<-sapply(cs.res$Input.Sample,function(x){
   y=which(full.map$entity.sampleID==gsub('”','',x))
   paste("Patient",full.map$Patient[y],"Tumor",full.map$TumorNumber[y])
@@ -34,10 +37,7 @@ cibersort.df <- cibersort.df[2:26,]
 colnames(cibersort.df) <- header
 skin.type <- getSampleNamesForMatrix(cibersort.df)
 skin.IDs <- rownames(skin.type)
-skin.type.s <- c(paste((skin.type$Sample), skin.IDs, sep = "-"))
-
-full.map$entity.sampleID <- gsub("-", ".", full.map$entity.sampleID, fixed = TRUE)
-full.map$entity.sampleID <- paste("X",full.map$entity.sampleID, sep = "")
+skin.type.s <- c(paste((skin.type$Sample), skin.IDs, sep = " "))
 
 all.names <- c(sampleIds[1:33], skin.type.s[34:66])
 
@@ -46,7 +46,7 @@ all.names <- c(sampleIds[1:33], skin.type.s[34:66])
 rownames(cs.res)<-all.names
 cs.res<-cs.res[,-1]
 
-this.file=''
+this.file='https://github.com/allaway/dNFLandscape/blob/master/analysis/2016-11-23/replot_CIBERSORT_dNF_skin.R'
 library(pheatmap)
-pheatmap(cs.res[,1:22],annotation_row=cs.res[,23:25],cellheight=10,cellwidth = 10)
-synStore(File('ciberSortRePlotted.png',parentId='syn5809348'),executed=list(list(url=this.file)))
+pheatmap(cs.res[,1:22],annotation_row=cs.res[,23:25],cellheight=10,cellwidth = 10, filename = 'ciberSortRePlotted_dNF_skin.png')
+synStore(File('ciberSortRePlotted_dNF_skin.png',parentId='syn5809348'), used = 'syn7810244', executed=list(list(url=this.file)))

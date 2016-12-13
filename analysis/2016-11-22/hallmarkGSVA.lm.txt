@@ -1,0 +1,67 @@
+
+Call:
+lm(formula = hallmark.GSVA.df$annotation ~ ., data = hallmark.GSVA.df[2:50])
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.119040 -0.029147 -0.004163  0.031548  0.104847 
+
+Coefficients:
+                                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                                 0.37755    0.03162  11.940 2.21e-09 ***
+HALLMARK_TNFA_SIGNALING_VIA_NFKB           -0.53495    0.51036  -1.048   0.3101    
+HALLMARK_HYPOXIA                            0.81007    0.51220   1.582   0.1333    
+HALLMARK_CHOLESTEROL_HOMEOSTASIS            0.04236    0.25505   0.166   0.8702    
+HALLMARK_MITOTIC_SPINDLE                   -0.83760    0.42013  -1.994   0.0635 .  
+HALLMARK_WNT_BETA_CATENIN_SIGNALING        -0.05453    0.25716  -0.212   0.8348    
+HALLMARK_TGF_BETA_SIGNALING                -0.31149    0.22617  -1.377   0.1874    
+HALLMARK_IL6_JAK_STAT3_SIGNALING            0.16897    0.53227   0.317   0.7550    
+HALLMARK_DNA_REPAIR                         0.66487    0.44593   1.491   0.1554    
+HALLMARK_G2M_CHECKPOINT                     0.72671    0.68260   1.065   0.3028    
+HALLMARK_APOPTOSIS                          1.20371    0.51146   2.353   0.0317 *  
+HALLMARK_NOTCH_SIGNALING                    0.39566    0.21133   1.872   0.0796 .  
+HALLMARK_ADIPOGENESIS                       0.33725    0.50234   0.671   0.5116    
+HALLMARK_ESTROGEN_RESPONSE_EARLY           -0.76982    0.49821  -1.545   0.1419    
+HALLMARK_ESTROGEN_RESPONSE_LATE             0.85584    0.44213   1.936   0.0708 .  
+HALLMARK_ANDROGEN_RESPONSE                 -0.08368    0.32909  -0.254   0.8025    
+HALLMARK_MYOGENESIS                        -0.15419    0.39291  -0.392   0.6999    
+HALLMARK_PROTEIN_SECRETION                 -0.60035    0.41185  -1.458   0.1643    
+HALLMARK_INTERFERON_ALPHA_RESPONSE          0.02564    0.39937   0.064   0.9496    
+HALLMARK_INTERFERON_GAMMA_RESPONSE         -0.25809    0.69475  -0.371   0.7151    
+HALLMARK_APICAL_JUNCTION                    0.01220    0.36735   0.033   0.9739    
+HALLMARK_APICAL_SURFACE                     0.04162    0.28234   0.147   0.8846    
+HALLMARK_HEDGEHOG_SIGNALING                 0.23530    0.23654   0.995   0.3347    
+HALLMARK_COMPLEMENT                        -0.09490    0.72818  -0.130   0.8979    
+HALLMARK_UNFOLDED_PROTEIN_RESPONSE         -0.03493    0.36488  -0.096   0.9249    
+HALLMARK_PI3K_AKT_MTOR_SIGNALING           -0.18672    0.35021  -0.533   0.6012    
+HALLMARK_MTORC1_SIGNALING                   0.42236    0.59621   0.708   0.4889    
+HALLMARK_E2F_TARGETS                       -0.87792    0.52555  -1.670   0.1143    
+HALLMARK_MYC_TARGETS_V1                     0.32753    0.35419   0.925   0.3688    
+HALLMARK_MYC_TARGETS_V2                    -0.15045    0.17758  -0.847   0.4093    
+HALLMARK_EPITHELIAL_MESENCHYMAL_TRANSITION -0.11657    0.22056  -0.528   0.6044    
+HALLMARK_INFLAMMATORY_RESPONSE              1.16535    0.79996   1.457   0.1645    
+HALLMARK_XENOBIOTIC_METABOLISM             -0.41856    0.56873  -0.736   0.4724    
+HALLMARK_FATTY_ACID_METABOLISM              0.07515    0.42819   0.176   0.8629    
+HALLMARK_OXIDATIVE_PHOSPHORYLATION         -0.20334    0.32378  -0.628   0.5389    
+HALLMARK_GLYCOLYSIS                        -0.78593    0.77569  -1.013   0.3260    
+HALLMARK_REACTIVE_OXIGEN_SPECIES_PATHWAY   -0.14020    0.29723  -0.472   0.6435    
+HALLMARK_P53_PATHWAY                       -0.84000    0.46082  -1.823   0.0871 .  
+HALLMARK_UV_RESPONSE_UP                    -0.07737    0.59576  -0.130   0.8983    
+HALLMARK_UV_RESPONSE_DN                     0.29137    0.34984   0.833   0.4172    
+HALLMARK_ANGIOGENESIS                      -0.33306    0.22999  -1.448   0.1669    
+HALLMARK_HEME_METABOLISM                    0.26089    0.46234   0.564   0.5804    
+HALLMARK_COAGULATION                       -0.53466    0.43987  -1.216   0.2418    
+HALLMARK_IL2_STAT5_SIGNALING               -0.34329    0.74280  -0.462   0.6502    
+HALLMARK_BILE_ACID_METABOLISM              -0.02838    0.46037  -0.062   0.9516    
+HALLMARK_PEROXISOME                        -0.05956    0.43135  -0.138   0.8919    
+HALLMARK_ALLOGRAFT_REJECTION               -0.51351    0.42841  -1.199   0.2481    
+HALLMARK_SPERMATOGENESIS                   -0.52037    0.44575  -1.167   0.2602    
+HALLMARK_KRAS_SIGNALING_UP                 -0.13059    0.58076  -0.225   0.8249    
+HALLMARK_KRAS_SIGNALING_DN                 -0.28699    0.44730  -0.642   0.5302    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.09165 on 16 degrees of freedom
+Multiple R-squared:  0.9919,	Adjusted R-squared:  0.9669 
+F-statistic: 39.77 on 49 and 16 DF,  p-value: 1.489e-10
+

@@ -3,7 +3,7 @@
 require(synapseClient)
 synapseLogin()
 
-gene.mapping<-read.table('../data/ensemblHugoGeneMapping.txt',header=T,sep='\t')
+gene.mapping<-read.table('../../data/ensemblHugoGeneMapping.txt',header=T,sep='\t')
 metadata<-read.table(synGet("syn6023670")@filePath,sep='\t',header=T)
 
 ##match the sample names to the metadata

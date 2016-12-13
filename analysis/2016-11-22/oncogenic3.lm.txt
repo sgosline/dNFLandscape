@@ -1,0 +1,210 @@
+
+Call:
+lm(formula = oncogenic.ssGSEA.df$annotation ~ ., data = oncogenic.ssGSEA.df[128:190])
+
+Residuals:
+                                                 Patient 1 Tumor 1 
+                                                         0.0082439 
+                                                 Patient 1 Tumor 2 
+                                                        -0.0015987 
+                                                 Patient 1 Tumor 4 
+                                                         0.0025646 
+                                                 Patient 2 Tumor 1 
+                                                        -0.0009695 
+                                                 Patient 2 Tumor 2 
+                                                        -0.0008285 
+                                                 Patient 3 Tumor 1 
+                                                        -0.0027914 
+                                                 Patient 3 Tumor 2 
+                                                        -0.0018176 
+                                                 Patient 3 Tumor 3 
+                                                        -0.0002980 
+                                                 Patient 3 Tumor 4 
+                                                         0.0005353 
+                                                 Patient 4 Tumor 1 
+                                                         0.0011080 
+                                                 Patient 4 Tumor 4 
+                                                        -0.0002547 
+                                                 Patient 4 Tumor 9 
+                                                        -0.0007132 
+                                                Patient 4 Tumor 10 
+                                                         0.0018840 
+                                                 Patient 5 Tumor 5 
+                                                        -0.0023017 
+                                                 Patient 5 Tumor 8 
+                                                         0.0030900 
+                                                 Patient 6 Tumor 4 
+                                                        -0.0026979 
+                                                 Patient 6 Tumor 5 
+                                                        -0.0021969 
+                                                 Patient 6 Tumor 6 
+                                                         0.0035006 
+                                                 Patient 6 Tumor 7 
+                                                        -0.0046586 
+                                                 Patient 8 Tumor 1 
+                                                        -0.0028690 
+                                                 Patient 8 Tumor 4 
+                                                         0.0024533 
+                                                 Patient 8 Tumor 5 
+                                                         0.0010331 
+                                                 Patient 8 Tumor 6 
+                                                         0.0019203 
+                                                 Patient 9 Tumor 1 
+                                                         0.0059107 
+                                                 Patient 9 Tumor 6 
+                                                        -0.0038399 
+                                                Patient 10 Tumor 1 
+                                                         0.0007331 
+                                                Patient 10 Tumor 2 
+                                                        -0.0021513 
+                                                Patient 10 Tumor 3 
+                                                        -0.0031036 
+                                                Patient 11 Tumor 3 
+                                                         0.0001055 
+                                                Patient 13 Tumor 1 
+                                                        -0.0011865 
+                                                Patient 13 Tumor 3 
+                                                        -0.0001406 
+                                               Patient 11 Tumor 14 
+                                                         0.0018261 
+                                                Patient 11 Tumor 1 
+                                                         0.0003802 
+                                    melanocyte of skin ENCFF722QGY 
+                                                        -0.0001160 
+                                    melanocyte of skin ENCFF044EJX 
+                                                         0.0002052 
+                                          keratinocyte ENCFF052HXO 
+                                                        -0.0017961 
+                                          keratinocyte ENCFF063XVI 
+                                                         0.0017690 
+                                          keratinocyte ENCFF372VME 
+                                                        -0.0030940 
+                                          keratinocyte ENCFF108ERJ 
+                                                         0.0042788 
+                                          keratinocyte ENCFF699KSV 
+                                                        -0.0020820 
+                                          keratinocyte ENCFF376ZWZ 
+                                                        -0.0015210 
+                                          keratinocyte ENCFF886ZLO 
+                                                         0.0015690 
+              dermis lymphatic vessel endothelial cell ENCFF111SEX 
+                                                         0.0006850 
+              dermis lymphatic vessel endothelial cell ENCFF755GEI 
+                                                         0.0031007 
+                     hair follicle dermal papilla cell ENCFF495BUA 
+                                                        -0.0031217 
+                     hair follicle dermal papilla cell ENCFF650BVH 
+                                                         0.0038369 
+                                          skin of body ENCFF274EWD 
+                                                        -0.0041090 
+                                          skin of body ENCFF458UWF 
+                                                         0.0026772 
+                  dermis blood vessel endothelial cell ENCFF467LOW 
+                                                         0.0020461 
+                  dermis blood vessel endothelial cell ENCFF906UPT 
+                                                         0.0029516 
+                          hair follicular keratinocyte ENCFF798LDD 
+                                                        -0.0005190 
+                          hair follicular keratinocyte ENCFF898LWW 
+                                                         0.0015311 
+                                          keratinocyte ENCFF793MNO 
+                                                         0.0013765 
+                                          keratinocyte ENCFF970EZY 
+                                                        -0.0159470 
+                                          keratinocyte ENCFF759EQF 
+                                                         0.0138666 
+                                    melanocyte of skin ENCFF788QAK 
+                                                         0.0015213 
+                                    melanocyte of skin ENCFF848HBI 
+                                                        -0.0011888 
+                                          keratinocyte ENCFF249RAD 
+                                                        -0.0016107 
+                                          keratinocyte ENCFF852SRQ 
+                                                         0.0020756 
+                                          keratinocyte ENCFF050NVH 
+                                                         0.0013717 
+                                  fibroblast of dermis ENCFF870JUS 
+                                                        -0.0019966 
+                                  fibroblast of dermis ENCFF353DEP 
+                                                         0.0007592 
+dermis microvascular lymphatic vessel endothelial cell ENCFF436XMQ 
+                                                        -0.0025369 
+dermis microvascular lymphatic vessel endothelial cell ENCFF684KLL 
+                                                        -0.0058627 
+                                     fibroblast of arm ENCFF640FPG 
+                                                         0.0004318 
+                                     fibroblast of arm ENCFF704TVE 
+                                                        -0.0014228 
+
+Coefficients:
+                                    Estimate Std. Error t value Pr(>|t|)  
+(Intercept)                         -3.63648    0.96589  -3.765   0.0328 *
+CAHOY_ASTROGLIAL                    -0.33909    2.25405  -0.150   0.8900  
+CAHOY_NEURONAL                       0.84045    2.17744   0.386   0.7253  
+CAHOY_OLIGODENDROCUTIC               4.41763    2.57411   1.716   0.1846  
+RPS14_DN.V1_DN                       0.14766    1.73235   0.085   0.9374  
+RPS14_DN.V1_UP                       3.77003    3.74411   1.007   0.3881  
+IL15_UP.V1_DN                       -8.46516    7.09307  -1.193   0.3185  
+IL15_UP.V1_UP                       -7.72019    7.38482  -1.045   0.3726  
+IL2_UP.V1_DN                        -1.84439    1.47360  -1.252   0.2994  
+IL2_UP.V1_UP                         5.40392    6.81458   0.793   0.4857  
+IL21_UP.V1_DN                        4.13380    6.25437   0.661   0.5559  
+IL21_UP.V1_UP                        2.06920    4.12922   0.501   0.6508  
+PDGF_ERK_DN.V1_DN                   -1.89777    1.88996  -1.004   0.3893  
+PDGF_ERK_DN.V1_UP                    9.32607   10.84831   0.860   0.4532  
+PDGF_UP.V1_DN                        0.03323    1.90662   0.017   0.9872  
+PDGF_UP.V1_UP                        4.05126    1.66854   2.428   0.0935 .
+TGFB_UP.V1_DN                       -3.13160    3.16302  -0.990   0.3951  
+TGFB_UP.V1_UP                        1.44533    3.29761   0.438   0.6908  
+YAP1_DN                              6.14819    2.26361   2.716   0.0728 .
+YAP1_UP                             -2.69675    0.68493  -3.937   0.0292 *
+SIRNA_EIF4GI_DN                      2.30907    2.63919   0.875   0.4460  
+SIRNA_EIF4GI_UP                      4.87113    1.89843   2.566   0.0828 .
+HOXA9_DN.V1_DN                      -0.91035    1.75214  -0.520   0.6393  
+HOXA9_DN.V1_UP                      -0.02449    5.57639  -0.004   0.9968  
+SINGH_KRAS_DEPENDENCY_SIGNATURE_    -0.90924    1.33318  -0.682   0.5442  
+STK33_DN                           -17.37596    4.61170  -3.768   0.0327 *
+STK33_NOMO_DN                       19.48458    4.00768   4.862   0.0166 *
+STK33_NOMO_UP                       -3.59094    4.33415  -0.829   0.4681  
+STK33_SKM_DN                        -5.13436    2.42624  -2.116   0.1246  
+STK33_SKM_UP                         2.93495    3.02097   0.972   0.4029  
+STK33_UP                            -1.20057    2.62244  -0.458   0.6782  
+KRAS.AMP.LUNG_UP.V1_DN               1.07127    1.53527   0.698   0.5355  
+KRAS.AMP.LUNG_UP.V1_UP              -2.21282    1.21110  -1.827   0.1651  
+KRAS.DF.V1_DN                        3.59670    2.01677   1.783   0.1725  
+KRAS.DF.V1_UP                        0.71540    1.76461   0.405   0.7124  
+TBK1.DF_DN                           0.39646    2.55875   0.155   0.8867  
+TBK1.DF_UP                          -2.95505    4.13885  -0.714   0.5268  
+TBK1.DN.48HRS_DN                    -1.23085    1.40325  -0.877   0.4450  
+TBK1.DN.48HRS_UP                    -1.86386    0.86176  -2.163   0.1193  
+NFE2L2.V2                           -5.07746    3.75555  -1.352   0.2693  
+CORDENONSI_YAP_CONSERVED_SIGNATURE  -0.92277    1.73272  -0.533   0.6313  
+JAK2_DN.V1_DN                       -1.09476    0.61684  -1.775   0.1740  
+JAK2_DN.V1_UP                       -2.64605    3.46526  -0.764   0.5007  
+KRAS.300_UP.V1_DN                    0.44215    5.02549   0.088   0.9354  
+KRAS.300_UP.V1_UP                  -11.41013    3.58590  -3.182   0.0500 .
+KRAS.50_UP.V1_DN                    -1.35312    1.07185  -1.262   0.2960  
+KRAS.50_UP.V1_UP                     1.58308    1.90595   0.831   0.4671  
+KRAS.600_UP.V1_DN                    1.50564    4.96593   0.303   0.7816  
+KRAS.600_UP.V1_UP                    8.20524    3.80197   2.158   0.1198  
+KRAS.600.LUNG.BREAST_UP.V1_DN       10.76671    8.23448   1.308   0.2822  
+KRAS.600.LUNG.BREAST_UP.V1_UP       -3.61022    4.68430  -0.771   0.4970  
+KRAS.BREAST_UP.V1_DN                -6.01088    3.53185  -1.702   0.1873  
+KRAS.BREAST_UP.V1_UP                -3.64884    1.14977  -3.174   0.0503 .
+KRAS.KIDNEY_UP.V1_DN                -2.71878    1.55038  -1.754   0.1778  
+KRAS.KIDNEY_UP.V1_UP                -1.40861    2.67338  -0.527   0.6347  
+KRAS.LUNG_UP.V1_DN                  -2.15233    1.16038  -1.855   0.1606  
+KRAS.LUNG_UP.V1_UP                  -4.74517    2.63691  -1.800   0.1698  
+KRAS.LUNG.BREAST_UP.V1_DN           -0.95356    3.85920  -0.247   0.8208  
+KRAS.LUNG.BREAST_UP.V1_UP            5.23786    3.02995   1.729   0.1823  
+KRAS.PROSTATE_UP.V1_DN              -0.29732    1.24568  -0.239   0.8267  
+KRAS.PROSTATE_UP.V1_UP               4.19512    3.21075   1.307   0.2825  
+LEF1_UP.V1_DN                        3.58112    1.98191   1.807   0.1685  
+LEF1_UP.V1_UP                        5.19801    2.42433   2.144   0.1214  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.01704 on 3 degrees of freedom
+Multiple R-squared:  0.9999,	Adjusted R-squared:  0.9989 
+F-statistic: 916.6 on 62 and 3 DF,  p-value: 5.034e-05
+
