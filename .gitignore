@@ -22,4 +22,5 @@ vignettes/*.pdf
 *.pdf
 *.png
 *.gmt
+*.M2*
 
