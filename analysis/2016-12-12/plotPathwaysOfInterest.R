@@ -7,8 +7,6 @@ p05='syn6097853'
 p1='syn6099307'
 #compare germline/somatic mutations to various f
 
-pval.df <- data.frame()
-
 plotPathwayAcrossScores<-function(patient.sample.vars,patient.sample.muts,pathwayGenes,testName){
   ##figure out how many samples we have in common
   overlap<-intersect(names(patient.sample.vars),colnames(patient.sample.muts))
@@ -17,8 +15,7 @@ plotPathwayAcrossScores<-function(patient.sample.vars,patient.sample.muts,pathwa
   if(TRUE %in% index) {
   pathwayMutated <- apply(patient.sample.muts[index, overlap, drop = FALSE], 2, any)
   df<-data.frame(pathwayMutated = pathwayMutated, score = cs[overlap])
-  pathwaylabel <- colnames(x)
-  print(pathwaylabel)
+
   #colnames(df)<-c(paste(geneName,'mutation'),paste(testName,'score'))
   p<-ggplot()+geom_boxplot(data=df,aes(x=pathwayMutated,y=score))+geom_jitter(data=df,aes(x=pathwayMutated,y=score,color=pathwayMutated))+ggtitle(paste(paste(pathwayGenes,collapse="_"),'mutation status by\n',testName,'scores'))
   print(p)
@@ -30,25 +27,17 @@ plotPathwayAcrossScores<-function(patient.sample.vars,patient.sample.muts,pathwa
 }
 
 calculatePvalues <- function(patient.sample.vars,patient.sample.muts,pathwayGenes,testName) {
-
   overlap<-intersect(names(patient.sample.vars),colnames(patient.sample.muts))
   print(paste('We have',length(overlap),'samples to evaluate significant difference'))
   index <- row.names(patient.sample.muts) %in% pathwayGenes
-  pathwayMutated <- apply(gl.vars.by.sample[index, overlap, drop = FALSE], 2, any)
-  df<-data.frame(pathwayMutated = pathwayMutated, score = cs[overlap])
-  pathwaylabel <- names(pathway.list)
+  pathwayMutated <- apply(patient.sample.muts[index, overlap, drop = FALSE], 2, any)
   
-  if((sum(pathwayMutated)>1) && ((length(pathwayMutated)-sum(pathwayMutated))>1)) {
-  pval <- t.test(df$score ~ df$pathwayMutated)$p.value
-  print(pval)
-  pval.df <- rbind(pval.df, pval)
-  } else {
-  print(paste(pathwayGenes, " lacking two mutation categories"))
-    pval<-1
-  }
-  return(pval)
-  }
+  df<-data.frame(pathwayMutated = pathwayMutated, score = cs[overlap])
 
+  pval<-1
+  try((pval <- t.test(df$score ~ df$pathwayMutated)$p.value), silent = TRUE)
+  print(pval)
+  }
 
 som.vars<-somaticGeneSampleMatrix()
 germ.vars<-germlineGeneSampleMatrix()
@@ -74,59 +63,64 @@ cib.paths=c("Mast.cells.resting","Macrophages.M2")
 
 pathway.list <- read.table('enrichr_mutated_GO_terms.txt', header = TRUE, sep = "\t")
 
-pval.df <- data.frame()
+pvalGermline.df <- data.frame("Signature"=c("placeholder"), "Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)
+pvalSomatic.df <- data.frame("Signature"=c("placeholder"), "Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)
+pvalEstimateGermline.df <- data.frame("Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)
+pvalEstimateSomatic.df <- data.frame("Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)
 
-pdf('plotPathwaysAcrossMutScores.pdf')
+##pdf('plotPathwaysAcrossMutScores.pdf')
 for(x in pathway.list){
   for(cp in cib.paths){
     cs<-cib.scores[,cp]
     names(cs)<-rownames(cib.scores)
-    plotPathwayAcrossScores(cs,gl.vars.by.sample,x,paste(cp,'Germline',sep='')) 
-    calculatePvalues(cs,gl.vars.by.sample,x,paste(cp,'Germline',sep=''))
+    plotPathwayAcrossScores(cs,gl.vars.by.sample,x,paste(cp,'Germline',sep=''))
+    pathwayname <- capture.output(print(x[1], max.levels = 0))
+    pathwayname <- sub(pattern = "[1]", pathwayname, replacement = "", fixed = TRUE)
+    signaturename <- print(cp[1], max.levels = 0)
+    signaturename <- sub(pattern = "[1]", signaturename, replacement = "", fixed = TRUE)
+    pvalGermline <- c(signaturename, pathwayname, calculatePvalues(cs,gl.vars.by.sample,x,paste('Germline',sep='')))
+    names(pvalGermline) <- c("Signature", "Pathway", "p.value")
+    pvalGermline.df <- rbind(pvalGermline.df, pvalGermline)
+  ##########
     plotPathwayAcrossScores(cs,som.vars,x,paste(cp,'Somatic',sep='')) 
-  }
+    pathwayname <- capture.output(print(x[1], max.levels = 0))
+    pathwayname <- sub(pattern = "[1]", pathwayname, replacement = "", fixed = TRUE)
+    signaturename <- print(cp[1], max.levels = 0)
+    signaturename <- sub(pattern = "[1]", signaturename, replacement = "", fixed = TRUE)
+    pvalSomatic <- c(signaturename, pathwayname, calculatePvalues(cs,som.vars,x,paste('Somatic',sep='')))
+    names(pvalSomatic) <- c("Signature", "Pathway", "p.value")
+    pvalSomatic.df <- rbind(pvalSomatic.df, pvalSomatic)
+  } }
+
+for(x in pathway.list){
   es<-as.numeric(est.scores['ESTIMATEScore',])
   names(es)<-colnames(est.scores)
-  plotPathwayAcrossScores(es,gl.vars.by.sample,x,paste('EstimateGermline',sep='')) 
-  plotPathwayAcrossScores(es,som.vars,x,paste('EstimateSomatic',sep='')) 
+  ##########
+    plotPathwayAcrossScores(es,gl.vars.by.sample,x,paste('EstimateGermline',sep=''))
+    print(names(x))
+    pathwayname <- sub(pattern = "[1]", pathwayname, replacement = "", fixed = TRUE)
+    pvalEstimateGermline <- c(pathwayname, calculatePvalues(es,gl.vars.by.sample,x,paste('EstimateGermline',sep='')))
+    names(pvalEstimateGermline) <- c("Pathway", "p.value")
+    pvalEstimateGermline.df <- rbind(pvalEstimateGermline.df, pvalEstimateGermline)
+  #########
+    plotPathwayAcrossScores(es,som.vars,x,paste('EstimateSomatic',sep='')) 
+    pathwayname <- capture.output(print(x[1], max.levels = 0))
+    pathwayname <- sub(pattern = "[1]", pathwayname, replacement = "", fixed = TRUE)
+    pvalEstimateSomatic <- c(pathwayname, calculatePvalues(es,som.vars,x,paste('EstimateSomatic',sep='')))
+    names(pvalEstimateSomatic) <- c("Pathway", "p.value")
+    pvalEstimateSomatic.df <- rbind(pvalEstimateSomatic.df, pvalEstimateSomatic)
 }
-dev.off()
+   ##dev.off()
 
+pvalGermline.df <- pvalGermline.df[-1,]
+pvalSomatic.df <- pvalSomatic.df[-1,]
+pvalEstimateGermline.df<- pvalEstimateGermline.df[-1,]
+pvalEstimateSomatic.df <- pvalEstimateSomatic.df[-1,]
+
+pvalGermline.df$BH <- p.adjust(pvalGermline.df$p.value, method = "BH")
+pvalSomatic.df$BH <- p.adjust(pvalSomatic.df$p.value, method = "BH")
+pvalEstimateGermline.df$BH <- p.adjust(pvalEstimateGermline.df$p.value, method = "BH", n = 54)
+pvalEstimateSomatic.df$BH <- p.adjust(pvalEstimateSomatic.df$p.value, method = "BH", n = 54)
 
 this.file='https://raw.githubusercontent.com/allaway/dNFLandscape/master/analysis/2016-12-12/plotPathwaysOfInterest.R'
-synStore(File('plotPathwaysAcrossMutScores.pdf', parentId='syn7845166'), executed=this.file, used=list('syn5809355', 'syn5908274', p05, p1))
-
-
-
-
-
-
-
-########scratch area####
-
-print(paste('We have',length(overlap),'samples to check for mutation correlates'))
-index <- row.names(gl.vars.by.sample) %in% pathway.list$GTPase_regulator_activity
-if(TRUE %in% index) 
-{
-  pathwayMutated <- apply(gl.vars.by.sample[index, overlap, drop = FALSE], 2, any)
-  df<-data.frame(pathwayMutated = pathwayMutated, score = cs[overlap])
-  pathwaylabel <- names(pathway.list)
-  print(pathwaylabel[1])
-  
-  #colnames(df)<-c(paste(geneName,'mutation'),paste(testName,'score'))
-  p<-ggplot()+geom_boxplot(data=df,aes(x=pathwayMutated,y=score))+geom_jitter(data=df,aes(x=pathwayMutated,y=score,color=pathwayMutated))+ggtitle(paste(paste(pathwayGenes,collapse="_"),'mutation status by\n',testName,'scores'))
-  print(p)
-  ggsave(paste(paste(pathwayGenes,collapse="_"),'mutationsBy',testName,'score.png',sep='_'))
-  if(any(df$pathwayMutated) && !all(df$pathwayMutated)) {
-    pval <- t.test(df$score ~ df$pathwayMutated)$p.value
-    pval.df <- rbind(pval.df, pathwayGenes = pval)
-    return(df) }
-  
-  else {return(df)}
-  
-}
-else{
-  print(paste(pathwayGenes, " not in seq data"))
-}
-}
-
+#synStore(File('plotPathwaysAcrossMutScores.pdf', parentId='syn7845166'), executed=this.file, used=list('syn5809355', 'syn5908274', p05, p1))
