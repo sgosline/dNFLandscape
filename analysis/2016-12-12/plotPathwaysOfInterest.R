@@ -29,7 +29,7 @@ plotPathwayAcrossScores<-function(patient.sample.vars,patient.sample.muts,pathwa
   }
 }
 
-calculatePvalues <- function(patient.sample.vars,patient.sample.muts,pathwayGenes,testName){
+calculatePvalues <- function(patient.sample.vars,patient.sample.muts,pathwayGenes,testName) {
 
   overlap<-intersect(names(patient.sample.vars),colnames(patient.sample.muts))
   print(paste('We have',length(overlap),'samples to evaluate significant difference'))
@@ -38,14 +38,17 @@ calculatePvalues <- function(patient.sample.vars,patient.sample.muts,pathwayGene
   df<-data.frame(pathwayMutated = pathwayMutated, score = cs[overlap])
   pathwaylabel <- names(pathway.list)
   
-#  if((sum(df[df==TRUE])>1) && (sum(df[df==FALSE])>1)) {
+  if((sum(pathwayMutated)>1) && ((length(pathwayMutated)-sum(pathwayMutated))>1)) {
   pval <- t.test(df$score ~ df$pathwayMutated)$p.value
-  pval <- c(pathwaylabel[x], pval)
   print(pval)
   pval.df <- rbind(pval.df, pval)
-#  } else {
+  } else {
   print(paste(pathwayGenes, " lacking two mutation categories"))
-}# }
+    pval<-1
+  }
+  return(pval)
+  }
+
 
 som.vars<-somaticGeneSampleMatrix()
 germ.vars<-germlineGeneSampleMatrix()

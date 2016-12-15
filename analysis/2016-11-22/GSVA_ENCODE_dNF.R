@@ -66,20 +66,33 @@ hallmark.sigs <- getGmt("h.all.v5.2.symbols.gmt", collectionType = BroadCollecti
 immunologic.sigs <- getGmt("c7.all.v5.2.symbols.gmt", collectionType = BroadCollection(category = "h"),
                            geneIdType = SymbolIdentifier())
 
+this.file <- "https://github.com/allaway/dNFLandscape/blob/master/analysis/2016-11-22/GSVA_ENCODE_dNF.R"
+
 ## oncogenic signature gene set collection GSVA and ssGSEA
-oncogenic.GSVA <- gsva(comb.norm2, oncogenic.sigs)$es.obs
+oncogenic.GSVA <- gsva(comb.norm2, oncogenic.sigs, rnaseq=TRUE)$es.obs
 oncogenic.ssGSEA <- gsva(comb.norm2, oncogenic.sigs, method = "ssgsea")
+write.table(oncogenic.GSVA, file = "oncogenic_GSVA.txt", sep = "\t")
+write.table(oncogenic.ssGSEA, file = "oncogenic_ssGSEA.txt", sep = "\t")
+synStore(File('oncogenic_GSVA.txt', parentId = 'syn7818711'), used = 'syn7818712', executed = this.file, activityName = 'GSVA')
+synStore(File('oncogenic_ssGSEA.txt', parentId = 'syn7818711'), used = 'syn7818712', executed = this.file, activityName = 'ssGSEA')
+
 ## hallmarks signature gene set collection GSVA
-hallmark.GSVA <- gsva(comb.norm2, hallmark.sigs)$es.obs
-hallmark.ssGSEA <- gsva(comb.norm2, hallmark.sigs, method = "ssgsea")
+hallmark.GSVA <- gsva(comb.norm2, hallmark.sigs, rnaseq=TRUE)$es.obs
+hallmark.ssGSEA <- gsva(comb.norm2, hallmark.sigs, rnaseq=TRUE, method = "ssgsea")
+write.table(hallmark.GSVA, file = "hallmark_GSVA.txt", sep = "\t")
+write.table(hallmark.ssGSEA, file = "hallmark_ssGSEA.txt", sep = "\t")
+synStore(File('hallmark_GSVA.txt', parentId = 'syn7818711'), used = 'syn7818714', executed = this.file, activityName = 'GSVA')
+synStore(File('hallmark_ssGSEA.txt', parentId = 'syn7818711'), used = 'syn7818714', executed = this.file, activityName = 'ssGSEA')
+
 ## immunologic signature gene set collection GSVA
-immunologic.GSVA <- gsva(comb.norm2, immunologic.sigs)$es.obs
+immunologic.GSVA <- gsva(comb.norm2, immunologic.sigs, rnaseq=TRUE)$es.obs
 immunologic.ssGSEA <- gsva(comb.norm2, immunologic.sigs, method = "ssgsea")
-adjPvalueCutoff <- 0.001
-logFCcutoff <- log2(2)
+write.table(immunologic.GSVA, file = "immunologic_GSVA.txt", sep = "\t")
+write.table(immunologic.ssGSEA, file = "immunologic_ssGSEA.txt", sep = "\t")
+synStore(File('immunologic_GSVA.txt', parentId = 'syn7818711'), used = 'syn7818713', executed = this.file, activityName = 'GSVA')
+synStore(File('immunologic_ssGSEA.txt', parentId = 'syn7818711'), used = 'syn7818713', executed = this.file, activityName = 'ssGSEA')
 
 library(pheatmap)
-this.file <- "https://github.com/allaway/dNFLandscape/blob/master/analysis/2016-11-22/GSVA_ENCODE_dNF.R"
 pheatmap(oncogenic.GSVA, fontsize_col = 2, fontsize_row = 1.3, border_color = FALSE, filename = 'oncogenic.GSVA.png')
 synStore(File('oncogenic.GSVA.png', parentId = 'syn7818711'), used = 'syn7818712', executed = this.file, activityName = 'GSVA')
 pheatmap(oncogenic.ssGSEA, fontsize_col = 2, fontsize_row = 1.3, border_color = FALSE, filename = 'oncogenic.ssGSEA.png')
