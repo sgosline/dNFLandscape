@@ -2,6 +2,8 @@
 
 source("../../dermalNF/bin/WGSData_VarDict.R")
 source('../../../dermalNF/bin/dermalNFData.R')
+source("../../bin/geneSampleMatrix.R")
+
 cancer.genes<-read.csv('../../data/Census_allTue Jan 19 18-58-56 2016.csv')
 if(!exists('expr.gene.muts05'))
   expr.gene.muts05<-subset(read.table(synGet("syn6097853")@filePath,sep='\t'),PASS=='TRUE')
@@ -92,9 +94,11 @@ plotMutsAcrossSamples<-function(sdf,samples=TRUE,minVal,prefix=''){
     prefix=paste(prefix,'_patients',sep='')
   }
   mat=mat[which(rowSums(mat)>=minVal),]
+  colnames(mat)<-sapply(colnames(mat),getTumorNumber)
+  mat<-mat[order(rowSums(mat)),order(colnames(mat))]
   fname=paste(prefix,'WithAtLeast',minVal,'mutations.png',sep='')
-  pheatmap(mat,cluster_rows=T,cluster_cols=T,filename = fname, cellheight=10,cellwidth=10)
-  return(list(genes=colnames(mat),file=fname))
+  pheatmap(mat,cluster_rows=F,cluster_cols=F,filename = fname, cellheight=10,cellwidth=10)
+  return(list(genes=rownames(mat),file=fname))
 }
 
 
