@@ -52,7 +52,7 @@ full.map$entity.sampleID <- gsub("-", ".", full.map$entity.sampleID, fixed = TRU
 full.map$entity.sampleID <- paste("X",full.map$entity.sampleID, sep = "")
 sampleIds<-sapply(cs.res$Input.Sample,function(x){
   y=which(full.map$entity.sampleID==gsub('”','',x))
-  paste("Patient",full.map$Patient[y],"Tumor",full.map$TumorNumber[y])
+  paste("patient",full.map$Patient[y],"tumor",full.map$TumorNumber[y])
 })
 all.names <- c(sampleIds[1:33], skin.type.s[34:66])
 colnames(comb.norm2) <- all.names
@@ -127,7 +127,13 @@ library(glmnet)
 oncogenic.input <- oncogenic.ssGSEA.t
 annotation <- c(rep.int(1, 33), rep.int(0, 33))
 
+
 oncogenic.glm<-glmnet(x = oncogenic.input, y = annotation, alpha =1)
+oncogenic.cvglm<-cv.glmnet(x = oncogenic.input, y = annotation, alpha =1)
+
+plot.cv.glmnet(oncogenic.cvglm)
+coef.cv.glmnet(oncogenic.cvglm)
+
 pdf("oncogenicGLMnet.pdf")
 plot.glmnet(oncogenic.glm)
 dev.off()
@@ -145,12 +151,20 @@ hallmark.ssGSEA.df <- as.data.frame(hallmark.ssGSEA.t)
 hallmark.ssGSEA.df <- cbind(annotation, hallmark.ssGSEA.df)
 
 ##modified from http://dni-institute.in/blogs/random-forest-using-r-step-by-step-tutorial/
-##sample.ind <- sample(2, 
-#                     nrow(hallmark.ssGSEA.df),
-#                     replace = T,
-#                     prob = c(0.6,0.4))
-#hallmark.ssGSEA.dev <- hallmark.ssGSEA.df[sample.ind==1,]
-#hallmark.ssGSEA.val <- hallmark.ssGSEA.df[sample.ind==2,]
+sample.ind <- sample(2, 
+                    nrow(hallmark.ssGSEA.df),
+                    replace = T,
+                    prob = c(0.6,0.4))
+hallmark.ssGSEA.dev <- hallmark.ssGSEA.df[sample.ind==1,]
+annotations <- as.vector(hallmark.ssGSEA.dev[1], mode='numeric')
+hallmark.ssGSEA.dev <- hallmark.ssGSEA.dev[-1]
+hallmark.ssGSEA.val <- hallmark.ssGSEA.df[sample.ind==2,]
+hallmark.ssGSEA.val <- hallmark.ssGSEA.val[1]
+
+hall.dev <-cv.glmnet(x = hallmark.ssGSEA.dev, y = annotations, alpha =1)
+predict.cv.glmnet(hall.dev, hallmark.ssGSEA.val, s="lamda.lse")
+
+
 
 hallmark.rF<-randomForest(formula = hallmark.ssGSEA.df$annotation ~ ., data = hallmark.ssGSEA.df)
 
@@ -172,6 +186,14 @@ hallmark.input <- hallmark.ssGSEA.t
 annotation <- c(rep.int(1, 33), rep.int(0, 33))
 
 hallmark.glm<-glmnet(x = hallmark.input, y = annotation, alpha =1)
+hallmark.cvglm<-cv.glmnet(x = hallmark.input, y = annotation, alpha =1)
+
+hallmark.cvglm<-cv.glmnet(x = hallmark.input, y = annotation, alpha =1)
+
+
+plot.cv.glmnet(hallmark.cvglm)
+coef.cv.glmnet(hallmark.cvglm)
+coef.glmnet(hallmark.glm)
 
 pdf("hallmarkGLMnet.pdf")
 plot.glmnet(hallmark.glm)
@@ -207,7 +229,6 @@ pdf("immunologic.randomforest.pdf")
 plot(immunologic.rF)
 varImpPlot(immunologic.rF, n.var=20)
 dev.off()
-
 
 sink("immunologic.rF.txt", append=FALSE)
 summary(immunologic.rF)
