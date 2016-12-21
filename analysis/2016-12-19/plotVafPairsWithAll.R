@@ -44,8 +44,9 @@ plotVafByPairs<-function(sampMat,patient,vdFilter=0){
 mclapply(unique(patients),function(pat){
   samps<-samples[which(patients==pat)]
   pars<-combn(samps,2)
-  plotVafByPairs(pars,patient=pat,vdFilter=0)
-  plotVafByPairs(pars,patient=pat,vdFilter=10)
+ # plotVafByPairs(pars,patient=pat,vdFilter=0)
+#  plotVafByPairs(pars,patient=pat,vdFilter=10)
+  plotVafByPairs(pars,patient=pat,vdFilter=20)
   },mc.cores=3)
   #print(dim(pars))
 #for(file in list.files('.'))
