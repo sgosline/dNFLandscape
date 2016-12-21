@@ -68,7 +68,7 @@ colnames(est.scores)<-tolower(patient_tumor_number_rna(colnames(est.scores),quan
 
 cib.paths=c("Mast.cells.resting","Macrophages.M2")
 
-pathway.list <- read.table('hotnet_pathways_2.txt', header = FALSE, sep = "\t")
+pathway.list <- read.table('cdc27_crebbp.txt', header = FALSE, sep = "\t")
 
 pvalGermline.df <- data.frame("Signature"=c("placeholder"), "Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)
 pvalSomatic.df <- data.frame("Signature"=c("placeholder"), "Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)

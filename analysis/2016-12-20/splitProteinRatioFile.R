@@ -12,11 +12,15 @@ c <- make.names(colnames(NFredo))
 colnames(NFredo) <- c
 
 for(i in colnames(NFredo[,6:47])) {
+  print(i)
   protein <- select(NFredo, Protein.Group:Sequence.Name)
   source <- c("originalFileName" = rep(source.file, nrow(protein)))
-  protein2 <- c(i = NFredo[,i])
-  protein <- cbind(protein, protein2, source)
+  protein2 <- as.data.frame(c(NFredo[,i]))
+  colnames(protein2) <- i
+  NFCS <- as.data.frame(NFredo[,48])
+  colnames(NFCS) <- "NFCS.Ratio"
+  protein <- cbind(protein, protein2, NFCS, source)
   protein <- write.table(protein, file = paste('dermalNF_updated_proteomics_',i,'_normalized.txt', sep = ""), sep = "\t", row.names = FALSE)
-  #synStore(File(path = paste('dermalNF_updated_proteomics_',x,'_normalized.txt', sep = ""), parentId = 'syn7349340'), used = 'syn7349351', executed = this.file)
+  synStore(File(path = paste('dermalNF_updated_proteomics_',i,'_normalized.txt', sep = ""), parentId = 'syn7892284'), used = 'syn7349351', executed = this.file)
 }
   
