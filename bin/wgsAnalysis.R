@@ -84,6 +84,9 @@ getMutsAcrossGenes<-function(expr.gene.muts,effect=c("HIGH"),germLine=c("Germlin
 }
 
 plotMutsAcrossSamples<-function(sdf,samples=TRUE,minVal,prefix=''){
+  if(nrow(sdf)==0)
+    return(list(genes=c(),file=NULL))
+  
   sdf$Present=rep(1,nrow(sdf))
   sdf$Patient<-sapply(sdf$Sample,function(x) paste(unlist(strsplit(as.character(x),split='_'))[1:2],collapse='_'))
   if(samples){
@@ -94,6 +97,9 @@ plotMutsAcrossSamples<-function(sdf,samples=TRUE,minVal,prefix=''){
     prefix=paste(prefix,'_patients',sep='')
   }
   mat=mat[which(rowSums(mat)>=minVal),]
+  if(length(nrow(mat))==0)
+    return(list(genes=c(),file=NULL))
+  
   colnames(mat)<-sapply(colnames(mat),getTumorNumber)
   mat<-mat[order(rowSums(mat)),order(colnames(mat))]
   fname=paste(prefix,'WithAtLeast',minVal,'mutations.png',sep='')

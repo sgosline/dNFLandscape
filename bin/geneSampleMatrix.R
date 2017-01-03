@@ -21,7 +21,7 @@ getTumorNumber<-function(sampname){
   return(gsub("_",' ',gsub(wgs,tn,sampname)))
 }
 
-somaticGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH")){
+somaticGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH"),vd=0){
     som.muts<-filter(muts,Status%in%c('LikelySomatic','StrongSomatic'))%>%filter(Effect%in%effect)
     samp.gene<-reshape2::acast(som.muts,Gene~Sample)
     colnames(samp.gene)<-sapply(colnames(samp.gene),getTumorNumber)
@@ -30,7 +30,7 @@ somaticGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH")){
     return(bin.mat)
 }
 
-germlineGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH")){
+germlineGeneSampleMatrix<-function(muts=fullfile,effect=c("HIGH"),vd=0){
   gl.muts<-filter(muts,Status=='Germline')%>%filter(Effect%in%effect)
   samp.gene<-reshape2::acast(gl.muts,Gene~Sample)
   colnames(samp.gene)<-sapply(colnames(samp.gene),getTumorNumber)

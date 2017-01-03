@@ -8,7 +8,6 @@ samples<-as.character(unique(expr.gene.muts1$Sample))
 patients<-sapply(samples,function(x) unlist(strsplit(x,split='_'))[2])
 
 
-
 plotVafByPairs<-function(sampMat,patient,mutDf){
     somDf<-subset(mutDf,Status%in%c('StrongSomatic','LikelySomatic'))#,'LikelyLOH'))
     somDf<-subset(somDf,!Chr%in%c('chrX','chrY'))

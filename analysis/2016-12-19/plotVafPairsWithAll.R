@@ -21,6 +21,8 @@ plotVafByPairs<-function(sampMat,patient,vdFilter=0){
   
     somDf<-subset(mutDf,Status%in%c('StrongSomatic','LikelySomatic'))#,'LikelyLOH'))
     somDf<-subset(somDf,!Chr%in%c('chrX','chrY'))
+    somDf<-subset(somDf,VD>vdFilter)
+    
     pdf(paste('patient',patient,'varAlleleFreqWithDepth_gt',vdFilter,'BySamp.pdf',sep='_'))
     sapply(unique(c(sampMat)),function(x){
       plot(density(subset(somDf,Sample==x)$AlleleFreq),main=paste("Allele Frequency for",x))
@@ -31,7 +33,6 @@ plotVafByPairs<-function(sampMat,patient,vdFilter=0){
           return(NULL)
         #res<-pairs%>%select(Sample,Gene,AlleleFreq)
         res<-pairs%>%unite(Pos,Chr,Start,sep='_')%>%select(Sample,Gene,Pos,AlleleFreq,VD,RD,Status,Effect)
-        res<-subset(res,VD>vdFilter)
                # mafs<-unique(res)%>%spread(AlleleFreq,Sample,fill=0.0)
         amat<-acast(res,Pos~Sample,fill=0.0,value.var='AlleleFreq',fun.aggregate=mean)
         newdf<-data.frame(amat,Gene=res$Gene[match(rownames(amat),res$Pos)],Status=res$Status[match(rownames(amat),res$Pos)],Effect=res$Effect[match(rownames(amat),res$Pos)])
