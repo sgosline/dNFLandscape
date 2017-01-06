@@ -1,0 +1,29 @@
+library(ggplot2)
+library(data.table)
+library(reshape2)
+
+TrinityTPM.genes <- synGet('syn7989908')@filePath
+Trinity.genes <- fread(file = TrinityTPM.genes, sep = '\t', header = TRUE)
+Trinity.genes <- melt(Trinity.genes)
+colnames(Trinity) <- c("Gene", "Sample", "TPM")
+
+TrinityTPM.transcripts <- synGet('syn7989912')@filePath
+Trinity.transcripts <- fread(file = TrinityTPM.transcripts, sep = '\t', header = TRUE)
+Trinity.transcripts <- melt(Trinity.transcripts)
+colnames(Trinity) <- c("Transcript", "Sample", "TPM")
+
+
+violin.genes<-ggplot(data=Trinity.genes, aes(x=Sample, y=log2(TMM+1))) + geom_violin(aes(color=Sample, fill = Sample))
+violin.transcripts<-ggplot(data=Trinity.transcripts, aes(x=Sample, y=log2(TMM+1))) + geom_violin(aes(color=Sample, fill = Sample))
+bxplt.genes<-ggplot(data=Trinity.genes, aes(x=Sample, y=log2(TMM+1))) + geom_boxplot(aes(color=Sample, fill = Sample))
+bxplt.transcripts<-ggplot(data=Trinity.transcripts, aes(x=Sample, y=log2(TMM+1))) + geom_boxplot(aes(color=Sample, fill = Sample))
+
+ggsave("Trinity_genes_log2TPM+1_violin.png", violin.genes)
+ggsave("Trinity_transcripts_log2TPM+1_violin.png", violin.transcripts)
+ggsave("Trinity_genes_log2TPM+1_boxplot.png", bxplt.genes)
+ggsave("Trinity_transcripts_log2TPM+1_boxplot.png", bxplt.transcripts)
+
+synStore(File("Trinity_genes_log2TPM+1_violin.png", parentId='syn7986689'), executed = this.file)
+synStore(File("Trinity_transcripts_log2TPM+1_violin.png", parentId='syn7986689'), executed = this.file)
+synStore(File("Trinity_genes_log2TPM+1_boxplot.png", parentId='syn7986689'), executed = this.file)
+synStore(File("Trinity_transcripts_log2TPM+1_boxplot.png", parentId='syn7986689'), executed = this.file)

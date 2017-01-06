@@ -1,4 +1,3 @@
-library(GSEABase)
 library(ggplot2)
 source("../../bin/encodeSkinRNASeq.R")
 
@@ -11,21 +10,11 @@ skin = getGeneNamesForMatrix(getEncodeSkinMatrix(metric = "FPKM", alignment = "h
                                                  doVoomNorm = FALSE))
 over = intersect(rownames(dermals), rownames(skin))
 
-## which annotation should we do? Are they really just duplicates of one another?
-
 ## step 1 - just combine all
 comb = cbind(dermals[over, ], skin[over, ])
 
 ##the PBK ids are missing from table, so need to query annotations
 res<-synQuery("select patientID,tissueID,sampleID from entity where parentId=='syn5492805'")
-#map<-unique(res)
-#from table get generic tumor id
-
-#tres<-synTableQuery("SELECT Patient,RnaID,TumorNumber,'RNASeq (Cufflinks)' FROM syn5556216 where RnaID is not NULL")@values
-#idx<-match(res$entity.id,tres$`RNASeq (Cufflinks)`)
-#dres<-res[which(!is.na(idx)),]
-#tres<-tres[idx[which(!is.na(idx))],]
-#full.map<-cbind(dres,tres)
 
 this.file = 'https://raw.githubusercontent.com/allaway/dNFLandscape/master/analysis/2016-12-22/FPKM_skin_dermals.R'
 

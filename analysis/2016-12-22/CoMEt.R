@@ -33,4 +33,8 @@ truemut2<-plyr::ldply(true.mutations, rbind)
 write.table(truemut2, file="truegermmut.m2", sep = '\t', col.names = FALSE, row.names = FALSE, quote = FALSE, na = "")
 
 merge<-dplyr::full_join(truemut,truemut2, by = ".id")
+library(SOfun)
+merge<-as.data.frame(naLast(merge, by = "row"))
 write.table(merge, file="allmut.m2", sep = '\t', col.names = FALSE, row.names = FALSE, quote = FALSE, na = "")
+
+

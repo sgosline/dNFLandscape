@@ -83,16 +83,28 @@ oncogenic.ssGSEA.df <- cbind(annotation, oncogenic.ssGSEA.df)
 sample.ind <- sample(2, 
                      nrow(oncogenic.ssGSEA.df),
                      replace = T,
-                     prob = c(0.6,0.4))
+                     prob = c(0.8,0.2))
 oncogenic.ssGSEA.dev <- oncogenic.ssGSEA.df[sample.ind==1,]
 oncogenic.ssGSEA.val <- oncogenic.ssGSEA.df[sample.ind==2,]
 
 library(randomForest)
+library(ROCR)
 oncogenic.rF<-randomForest(formula = oncogenic.ssGSEA.dev$annotation ~ ., data = oncogenic.ssGSEA.dev)
+
+predictions=as.vector(oncogenic.rF$votes[,2])
+pred=prediction(predictions, oncogenic.ssGSEA.dev$annotation)
+perf_AUC=performance(pred, "auc")
+AUC=perf_AUC@y.values[[1]]
+perf_ROC=performance(pred, "tpr", "fpr")
+plot(perf_ROC)
+
+oncogenic.rFcv<-rfcv(trainx=oncogenic.ssGSEA.df[,-1], trainy=oncogenic.ssGSEA.df[,1])
 
 summary(oncogenic.rF)
 plot(oncogenic.rF)
 varImpPlot(oncogenic.rF, n.var=20)
+
+summary(oncogenic.rFcv)
 
 predict(oncogenic.rF, oncogenic.ssGSEA.dev)
 predict(oncogenic.rF, oncogenic.ssGSEA.val)
@@ -126,13 +138,26 @@ dev.off()
 library(glmnet)
 oncogenic.input <- oncogenic.ssGSEA.t
 annotation <- c(rep.int(1, 33), rep.int(0, 33))
+oncogenic.input <- cbind(annotation, oncogenic.input)
 
+sample.ind <- sample(2, 
+                     nrow(oncogenic.input),
+                     replace = T,
+                     prob = c(0.8,0.2))
+oncogenic.input.dev <- oncogenic.input[sample.ind==1,]
+oncogenic.input.val <- oncogenic.input[sample.ind==2,]
 
-oncogenic.glm<-glmnet(x = oncogenic.input, y = annotation, alpha =1)
-oncogenic.cvglm<-cv.glmnet(x = oncogenic.input, y = annotation, alpha =1)
+oncogenic.glm<-glmnet(x = oncogenic.input.dev[,-1], y = oncogenic.input.dev[,1], alpha =1)
 
+oncogenic.cvglm<-cv.glmnet(x=oncogenic.input.dev[,-1], y = oncogenic.input.dev[,1], alpha =1)
 plot.cv.glmnet(oncogenic.cvglm)
 coef.cv.glmnet(oncogenic.cvglm)
+
+test.glm<-predict.cv.glmnet(oncogenic.cvglm, type="response", newx = oncogenic.input.val[,-1], s = "lambda.min")
+pred <- prediction(test.glm, oncogenic.input.val[,1])
+perf <- performance(pred,"tpr","fpr")
+performance(pred, "auc")
+plot(perf)
 
 pdf("oncogenicGLMnet.pdf")
 plot.glmnet(oncogenic.glm)
@@ -147,28 +172,40 @@ sink()
 hallmark.ssGSEA.t<-t(hallmark.ssGSEA)
 annotation <- as.factor(c(rep.int(1, 33), rep.int(0, 33)))
 
-hallmark.ssGSEA.df <- as.data.frame(hallmark.ssGSEA.t)
-hallmark.ssGSEA.df <- cbind(annotation, hallmark.ssGSEA.df)
+hallmark.ssGSEA.m <- as.matrix(hallmark.ssGSEA.t)
+hallmark.ssGSEA.m <- cbind(annotation, hallmark.ssGSEA.m)
 
 ##modified from http://dni-institute.in/blogs/random-forest-using-r-step-by-step-tutorial/
 sample.ind <- sample(2, 
-                    nrow(hallmark.ssGSEA.df),
+                    nrow(hallmark.ssGSEA.m),
                     replace = T,
                     prob = c(0.6,0.4))
-hallmark.ssGSEA.dev <- hallmark.ssGSEA.df[sample.ind==1,]
-annotations <- as.vector(hallmark.ssGSEA.dev[1], mode='numeric')
-hallmark.ssGSEA.dev <- hallmark.ssGSEA.dev[-1]
-hallmark.ssGSEA.val <- hallmark.ssGSEA.df[sample.ind==2,]
-hallmark.ssGSEA.val <- hallmark.ssGSEA.val[1]
+hallmark.ssGSEA.dev <- hallmark.ssGSEA.m[sample.ind==1,]
+hallmark.ssGSEA.val <- hallmark.ssGSEA.m[sample.ind==2,]
 
-hall.dev <-cv.glmnet(x = hallmark.ssGSEA.dev, y = annotations, alpha =1)
-predict.cv.glmnet(hall.dev, hallmark.ssGSEA.val, s="lamda.lse")
+hall.dev <-cv.glmnet(x = hallmark.ssGSEA.dev[,-1], y = hallmark.ssGSEA.dev[,1], alpha =1)
+hall.predict<-predict.cv.glmnet(hall.dev, type="response", hallmark.ssGSEA.val[,-1], s="lambda.min")
 
+plot.cv.glmnet(hall.dev)
+coef.cv.glmnet(hall.dev)
 
+pred <- prediction(hall.predict, hallmark.ssGSEA.val[,1])
+perf <- performance(pred,"tpr","fpr")
+performance(pred, "auc")
+plot(perf)
 
 hallmark.rF<-randomForest(formula = hallmark.ssGSEA.df$annotation ~ ., data = hallmark.ssGSEA.df)
 
 summary(hallmark.rF)
+
+predictions=as.vector(hallmark.rF$votes[,2])
+pred=prediction(predictions, hallmark.ssGSEA.df$annotation)
+perf_AUC=performance(pred, "auc")
+AUC=perf_AUC@y.values[[1]]
+perf_ROC=performance(pred, "tpr", "fpr")
+plot(perf_ROC)
+
+oncogenic.rFcv<-rfcv(trainx=oncogenic.ssGSEA.df[,-1], trainy=oncogenic.ssGSEA.df[,1])
 
 pdf("hallmark.randomforest.pdf")
 plot(hallmark.rF)

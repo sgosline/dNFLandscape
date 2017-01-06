@@ -5,6 +5,10 @@ NF_all_sets_redo<-synGet(id='syn7349351')
 filepath <- NF_all_sets_redo@filePath
 NFredo <- read.table(file = filepath, sep = '\t', header = TRUE)
 
+namespath<-synGet(id='syn4999547')@filePath
+names <- read.table(file = namespath, sep = '\t', header = TRUE)
+
+names2 <- synTableQuery('SELECT Patient, TumorNumber, WGS FROM syn5556216')@values
 source.file <- NF_all_sets_redo@fileHandle$fileName
 this.file <- 'https://raw.githubusercontent.com/allaway/dNFLandscape/master/analysis/2016-12-20/splitProteinRatioFile.R'
 
@@ -23,7 +27,7 @@ for(i in colnames(NFredo[,6:47])) {
   colnames(NFCS) <- "NFCS.Ratio"
   protein <- cbind(protein, protein2, NFCS, source)
   protein <- write.table(protein, file = paste('dermalNF_updated_proteomics_',i,'_normalized.txt', sep = ""), sep = "\t", row.names = FALSE)
-  ff<-File(path = paste('dermalNF_updated_proteomics_',i,'_normalized.txt', sep = ""), parentId = 'syn7899337')
-  synStore(ff, used = 'syn7349351', executed = this.file)
+  #ff<-File(path = paste('dermalNF_updated_proteomics_',i,'_normalized.txt', sep = ""), parentId = 'syn7899337')
+  #synStore(ff, used = 'syn7349351', executed = this.file)
   }
   

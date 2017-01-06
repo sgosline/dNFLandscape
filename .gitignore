@@ -24,6 +24,9 @@ vignettes/*.pdf
 *.png
 *.gmt
 *.txt
+*.m2
+*.tsv
+*.csv
 
 #folders
 hidefromgit
