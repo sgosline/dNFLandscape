@@ -29,8 +29,13 @@ plotVafByPairs<-function(sampMat,patient,vdFilter=0){
     somDf<-subset(mutDf,Status%in%c('StrongSomatic','LikelySomatic'))#,'LikelyLOH'))
     somDf<-subset(somDf,!Chr%in%c('chrX','chrY'))
 <<<<<<< HEAD
+<<<<<<< HEAD
     pdf(paste('patient',patient,'varAlleleFreqBySamp.pdf',sep='_'))
 =======
+=======
+    somDf<-subset(somDf,VD>vdFilter)
+    
+>>>>>>> sgosline/master
     pdf(paste('patient',patient,'varAlleleFreqWithDepth_gt',vdFilter,'BySamp.pdf',sep='_'))
 >>>>>>> upstream/master
     sapply(unique(c(sampMat)),function(x){
@@ -43,9 +48,12 @@ plotVafByPairs<-function(sampMat,patient,vdFilter=0){
         #res<-pairs%>%select(Sample,Gene,AlleleFreq)
         res<-pairs%>%unite(Pos,Chr,Start,sep='_')%>%select(Sample,Gene,Pos,AlleleFreq,VD,RD,Status,Effect)
 <<<<<<< HEAD
+<<<<<<< HEAD
        # mafs<-unique(res)%>%spread(AlleleFreq,Sample,fill=0.0)
 =======
         res<-subset(res,VD>vdFilter)
+=======
+>>>>>>> sgosline/master
                # mafs<-unique(res)%>%spread(AlleleFreq,Sample,fill=0.0)
 >>>>>>> upstream/master
         amat<-acast(res,Pos~Sample,fill=0.0,value.var='AlleleFreq',fun.aggregate=mean)
