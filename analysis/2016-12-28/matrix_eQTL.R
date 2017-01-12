@@ -84,9 +84,12 @@ plot(me2, col='grey')
 
 library(dplyr)
 
-cis<-filter(cis, FDR<0.001)
+cis<-filter(cis, FDR<0.05)
 siggene<-count(cis, gene)
 sigsnps<-count(cis, snps)
+write.table(siggene, file = "sig_genes.txt")
+write.table(sigsnps, file = "sig_snps.txt")
+
 
 ##use snpspos_noXY for cis eQTL analysis without X or Y chromosome position data, so these chromosomes will not be tested
 output_file_name_cis = 'output_cis_noXY.txt'
@@ -116,3 +119,9 @@ noX_Y.df<- noX_Y$cis$eqtls
 noX_Y.df<-filter(noX_Y.df, FDR<0.05)
 siggene<-count(noX_Y.df, gene)
 sigsnps<-count(noX_Y.df, snps)
+
+write.table(siggene, file = "sig_genes_noXY.txt")
+write.table(sigsnps, file = "sig_snps_noXY.txt")
+
+
+

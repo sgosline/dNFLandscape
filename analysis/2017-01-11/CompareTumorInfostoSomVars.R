@@ -144,6 +144,6 @@ samplenames<-unname(c(sample.info.germline[30,]))
 colnames(sample.info.germline) <- samplenames
 sample.info.germline<-as.matrix(sample.info.germline[3:29,])
 
-checkSampsAgainstGerm(sample.info.germline, 'Tumor_Info', germ.vars, pval=0.005)
+checkSampsAgainstGerm(sample.info.germline, 'Tumor_Info', germ.vars, pval=0.05)
 
 
