@@ -18,7 +18,7 @@ checkForMutationCorrelations<-function(patient.sample.vars,patient.sample.muts,p
   tpvals<-apply(patient.sample.muts[,overlap],1,function(x){
     if(length(unique(x))==1)
       return(1.0)
-    else if(which(x)<2)
+    else if(length(which(x))<2)
       return(1.0)
     else
         return(t.test(patient.sample.vars[overlap],x)$p.value)})
@@ -99,11 +99,29 @@ res<-checkSigsAgainstSom(gsea.immune,'GSEA_Immune',som.vars,pval=0.05)
 res<-checkSigsAgainstSom(gsea.onco,'GSEA_Onco',som.vars,pval=0.05)
 #upload files to synapse
 
-res<-checkSigsAgainstSom(gsva.hallmarks,'GSVA_Hallmarks',som.vars,pval=0.01)
-res<-checkSigsAgainstSom(gsva.immune,'GSVA_Immune',som.vars,pval=0.01)
-res<-checkSigsAgainstSom(gsva.onco,'GSVA_Onco',som.vars,pval=0.01)
+res<-checkSigsAgainstSom(gsva.hallmarks,'GSVA_Hallmarks',som.vars,pval=0.025)
+res<-checkSigsAgainstSom(gsva.immune,'GSVA_Immune',som.vars,pval=0.025)
+res<-checkSigsAgainstSom(gsva.onco,'GSVA_Onco',som.vars,pval=0.025)
 
-res<-checkSigsAgainstSom(gsea.hallmarks,'GSEA_Hallmarks',som.vars,pval=0.01)
-res<-checkSigsAgainstSom(gsea.immune,'GSEA_Immune',som.vars,pval=0.01)
-res<-checkSigsAgainstSom(gsea.onco,'GSEA_Onco',som.vars,pval=0.01)
+res<-checkSigsAgainstSom(gsea.hallmarks,'GSEA_Hallmarks',som.vars,pval=0.025)
+res<-checkSigsAgainstSom(gsea.immune,'GSEA_Immune',som.vars,pval=0.025)
+res<-checkSigsAgainstSom(gsea.onco,'GSEA_Onco',som.vars,pval=0.025)
+#upload files to synapse
+
+res<-checkSigsAgainstGerm(gsva.hallmarks,'GSVA_Hallmarks',germ.vars,pval=0.05)
+res<-checkSigsAgainstGerm(gsva.immune,'GSVA_Immune',germ.vars,pval=0.05)
+res<-checkSigsAgainstGerm(gsva.onco,'GSVA_Onco',germ.vars,pval=0.05)
+
+res<-checkSigsAgainstGerm(gsea.hallmarks,'GSEA_Hallmarks',germ.vars,pval=0.05)
+res<-checkSigsAgainstGerm(gsea.immune,'GSEA_Immune',germ.vars,pval=0.05)
+res<-checkSigsAgainstGerm(gsea.onco,'GSEA_Onco',germ.vars,pval=0.05)
+#upload files to synapse
+
+res<-checkSigsAgainstGerm(gsva.hallmarks,'GSVA_Hallmarks',germ.vars,pval=0.025)
+res<-checkSigsAgainstGerm(gsva.immune,'GSVA_Immune',germ.vars,pval=0.025)
+res<-checkSigsAgainstGerm(gsva.onco,'GSVA_Onco',germ.vars,pval=0.025)
+
+res<-checkSigsAgainstGerm(gsea.hallmarks,'GSEA_Hallmarks',germ.vars,pval=0.025)
+res<-checkSigsAgainstGerm(gsea.immune,'GSEA_Immune',germ.vars,pval=0.025)
+res<-checkSigsAgainstGerm(gsea.onco,'GSEA_Onco',germ.vars,pval=0.025)
 #upload files to synapse

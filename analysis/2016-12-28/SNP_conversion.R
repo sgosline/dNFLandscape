@@ -80,3 +80,4 @@ colnames(conversion.df) <- c("snp", "chr", "pos")
 chr <- conversion.df$chr
 conversion.df$chr<-chr
 snpspos<-as.data.frame(conversion.df)
+snpspos_noXY <- filter(snpspos, chr!='X', chr!='XY', chr!='Y')

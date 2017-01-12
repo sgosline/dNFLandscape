@@ -87,3 +87,32 @@ library(dplyr)
 cis<-filter(cis, FDR<0.001)
 siggene<-count(cis, gene)
 sigsnps<-count(cis, snps)
+
+##use snpspos_noXY for cis eQTL analysis without X or Y chromosome position data, so these chromosomes will not be tested
+output_file_name_cis = 'output_cis_noXY.txt'
+
+noX_Y = Matrix_eQTL_main(
+  snps = snps, 
+  gene = gene, 
+  cvrt = cvrt,
+  output_file_name = output_file_name_tra,
+  pvOutputThreshold = 0, ##allows running in cis-mode only - can run trans-mode too by turning on next line and turning this off
+  #pvOutputThreshold.tra = pvOutputThreshold_tra,
+  useModel = useModel, 
+  errorCovariance = errorCovariance, 
+  verbose = TRUE, 
+  output_file_name.cis = output_file_name_cis,
+  pvOutputThreshold.cis = pvOutputThreshold_cis,
+  snpspos = snpspos_noXY, 
+  genepos = genepos,
+  cisDist = cisDist,
+  pvalue.hist = 100,
+  min.pv.by.genesnp = FALSE,
+  noFDRsaveMemory = FALSE)
+
+plot(noX_Y, col='grey')
+noX_Y.df<- noX_Y$cis$eqtls
+
+noX_Y.df<-filter(noX_Y.df, FDR<0.05)
+siggene<-count(noX_Y.df, gene)
+sigsnps<-count(noX_Y.df, snps)
