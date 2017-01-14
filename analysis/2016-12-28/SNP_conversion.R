@@ -3,6 +3,7 @@ library(biomaRt)
 library(dplyr)
 library(tidyr)
 library(data.table)
+library(synapseClient)
 
 ##get gene expression data 
 ##get dermal NF data 
@@ -72,6 +73,7 @@ mart <- useMart(biomart = "ensembl", dataset = "hsapiens_gene_ensembl")
 genepos <- getBM(attributes = c("hgnc_symbol","chromosome_name","start_position","end_position"), filters = "hgnc_symbol",
                  values = rownames(comb.norm), mart = mart)   
 colnames(genepos) <- c("geneid", "chr", "s1", "s2")
+genepos_noXY <- filter(genepos, chr!='X', chr!='XY', chr!='Y')
 
 ##set up snpspos data frame 
 conversion.df <- fread(input = 'HumanOmni2-5-8-v1-1-C.csv', head = TRUE, skip=7L, sep=",")
@@ -81,3 +83,25 @@ chr <- conversion.df$chr
 conversion.df$chr<-chr
 snpspos<-as.data.frame(conversion.df)
 snpspos_noXY <- filter(snpspos, chr!='X', chr!='XY', chr!='Y')
+
+##covariates
+##get cutaneous NF sample information
+sample.info<-synTableQuery('SELECT * FROM syn5556216')@values
+patient.info<-synTableQuery('SELECT * FROM syn7342635')@values
+##prep tumor variables for comparison
+sample.info<-dplyr::full_join(sample.info,patient.info, by="Patient")
+sample.info<-dplyr::filter(sample.info, !is.na(WGS))
+sample.info<-dplyr::filter(sample.info, !is.na(TumorNumber))
+
+covariates<-dplyr::select(sample.info, Patient, TumorNumber, Race, Gender, Age)
+covariates$Gender[covariates$Gender=='Female'] <- 1
+covariates$Gender[covariates$Gender=='Male'] <- 0
+covariates$PatientTumorNumber <- paste(covariates$Patient, covariates$TumorNumber, sep="-")
+covariates <- covariates[,3:6]
+full.map <- dplyr::left_join(full.map, covariates, by="PatientTumorNumber")
+covariates <- dplyr::select(full.map, PatientTumorNumber, Gender, Age)
+rownames(covariates) <- covariates$PatientTumorNumber
+covariates <- t(covariates[,2:3])
+id <- rownames(covariates)
+covariates <- cbind(id, covariates)
+write.table(covariates, file = 'covariates.txt', sep = "\t", row.names=FALSE, quote = FALSE)
