@@ -90,7 +90,7 @@ sample.info<-synTableQuery('SELECT * FROM syn5556216')@values
 patient.info<-synTableQuery('SELECT * FROM syn7342635')@values
 ##prep tumor variables for comparison
 sample.info<-dplyr::full_join(sample.info,patient.info, by="Patient")
-sample.info<-dplyr::filter(sample.info, !is.na(WGS))
+sample.info<-dplyr::filter(sample.info, !is.na(RNASeq))
 sample.info<-dplyr::filter(sample.info, !is.na(TumorNumber))
 
 covariates<-dplyr::select(sample.info, Patient, TumorNumber, Race, Gender, Age)
