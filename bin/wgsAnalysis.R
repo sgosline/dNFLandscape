@@ -2,7 +2,7 @@
 
 source("../../dermalNF/bin/WGSData_VarDict.R")
 source('../../dermalNF/bin/dermalNFData.R')
-source('../../../dermalNF/bin/dermalNFData.R')
+source('../../dermalNF/bin/dermalNFData.R')
 source("../../bin/geneSampleMatrix.R")
 
 

@@ -3,13 +3,21 @@ library(data.table)
 library(reshape2)
 library(synapseClient)
 
+rnaid<-synTableQuery('SELECT RNASeq, sampleIdentifier FROM syn5556216')@values
+rnaid<-dplyr::filter(rnaid, !is.na(RNASeq))
+rnaid$RNASeq<-lapply(rnaid$RNASeq, function(x) synGet(id=x, downloadFile = FALSE)@fileHandle$fileName)
+rnaid$RNASeq<-gsub('accepted_hits_', "", rnaid$RNASeq)
+rnaid$RNASeq<-gsub('_featureCounts.txt', "", rnaid$RNASeq)
+
 TrinityTPM.genes <- synGet('syn7989908')@filePath
 Trinity.genes <- fread(file = TrinityTPM.genes, sep = '\t', header = TRUE)
+colnames(Trinity.genes)<-rnaid$sampleIdentifier[match(colnames(Trinity.genes), rnaid$RNASeq)]
 Trinity.genes <- melt(Trinity.genes)
 colnames(Trinity.genes) <- c("Gene", "Sample", "TPM")
 
 TrinityTPM.transcripts <- synGet('syn7989912')@filePath
 Trinity.transcripts <- fread(file = TrinityTPM.transcripts, sep = '\t', header = TRUE)
+colnames(Trinity.transcripts)<-rnaid$sampleIdentifier[match(colnames(Trinity.transcripts), rnaid$RNASeq)]
 Trinity.transcripts <- melt(Trinity.transcripts)
 colnames(Trinity.transcripts) <- c("Transcript", "Sample", "TPM")
 

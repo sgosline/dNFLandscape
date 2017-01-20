@@ -59,15 +59,15 @@ colnames(comb.norm2) <- all.names
 
 ## requires gene set collection in wd from MUTSIGDB
 ## http://software.broadinstitute.org/gsea/downloads.jsp
-#oncogenic.sigs <- getGmt("../../data/c6.all.v5.2.symbols.gmt", collectionType = BroadCollection(category = "c6"),
-#                         geneIdType = SymbolIdentifier())
+oncogenic.sigs <- getGmt("../../data/c6.all.v5.2.symbols.gmt", collectionType = BroadCollection(category = "c6"),
+                         geneIdType = SymbolIdentifier())
 hallmark.sigs <- getGmt("../../data/h.all.v5.2.symbols.gmt", collectionType = BroadCollection(category = "h"),
                         geneIdType = SymbolIdentifier())
 #immunologic.sigs <- getGmt("../../data/c7.all.v5.2.symbols.gmt", collectionType = BroadCollection(category = "h"),
 #                          geneIdType = SymbolIdentifier())
 
 ## oncogenic signature gene set collection sGSEA
-#oncogenic.ssGSEA <- gsva(comb.norm2, oncogenic.sigs, method = "ssgsea")
+oncogenic.ssGSEA <- gsva(comb.norm2, oncogenic.sigs, method = "ssgsea")
 ## hallmarks signature gene set collection ssgsea
 hallmark.ssGSEA <- gsva(comb.norm2, hallmark.sigs, method = "ssgsea")
 ## immunologic signature gene set collection ssgsea

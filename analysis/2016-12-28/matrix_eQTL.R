@@ -170,9 +170,17 @@ for(x in c(1:nrows)){
   this.rsid <- rsID[x]
   snpdat <-as.numeric(filter(snp2, id==chosen.snp)[,-1])
   genedat <-as.numeric(filter(expression2, id==chosen.gene)[,-1])
-  qplot(x = snpdat, y = genedat, color = snpdat, size = genedat, xlim = c(-0.5, 2.5), ylab = "log(2)FPKM", xlab = "SNP_Measurement",  
-        main = paste(chosen.snp,"_",chosen.gene,"_expression_level_FDR = ",FDR,"_rsID=",this.rsid))
-  ggsave(filename = paste(chosen.snp,"_",this.rsid,"_",chosen.gene,"_expr_",nameofdata,".png",  sep = ""))
+  dat<-as.data.frame(cbind(snpdat,genedat))
+  samps <- colnames(expression2)[-1]
+  ggplot(dat, aes(snpdat,genedat)) +
+    geom_point(aes(color=snpdat, size=genedat)) +
+    geom_text(aes(label=samps),hjust=1.5, vjust=0) +
+    labs(ylab = "log(2)FPKM", xlab = "SNP_Measurement", title = paste(chosen.snp,"_",chosen.gene,"_exprFDR = ",FDR,"_rsID=",this.rsid)) +
+    xlim(-0.5, 2.5)
+    
+  #qplot(x = snpdat, y = genedat, color = snpdat, size = genedat, xlim = c(-0.5, 2.5), ylab = "log(2)FPKM", xlab = "SNP_Measurement",  
+  #      main = paste(chosen.snp,"_",chosen.gene,"_exprFDR = ",FDR,"_rsID=",this.rsid))
+  ggsave(filename = paste(chosen.snp,"_",this.rsid,"_",chosen.gene,"_expression_level_",nameofdata,".png",  sep = ""))
   synStore(File(paste(chosen.snp,"_",this.rsid,"_",chosen.gene,"_expression_level_",nameofdata,".png",  sep = ""), parentId='syn8030585'), executed=this.file, used = used)
   }
 }
@@ -182,7 +190,7 @@ X_Y_incl <- cis
 PlotSigSnps(noX_Y.df, nrow(noX_Y.df), "noX_Y")
 PlotSigSnps(X_Y_incl, nrow(X_Y_incl), "X_Y_incl")
 
-tumorsize <- select(sample.info, Patient, TumorNumber, Length_in_mm)
+tumorsize <- dplyr::select(sample.info, Patient, TumorNumber, Length_in_mm)
 tumorsize <- unite(tumorsize, "PatientTumorNumber", Patient, TumorNumber, sep = "-", remove = TRUE)
 
 sizes <- filter(tumorsize, PatientTumorNumber %in% colnames(expression2))
@@ -196,14 +204,21 @@ PlotSigSnpsAndTumorSize<-function(df, nrows, nameofdata){
     chosen.snp <- snps[x]
     chosen.gene <- genes[x]
     FDR <- signif(pvalue[x], 3)
+    this.rsid <- rsID[x]
     snpdat <- as.numeric(filter(snp2, id==chosen.snp)[,-1])
     genedat <- as.numeric(filter(expression2, id==chosen.gene)[,-1])
+    dat<-as.data.frame(cbind(snpdat,genedat))
     samps <- colnames(expression2)[-1]
     sizes <- filter(tumorsize, PatientTumorNumber %in% samps)
     size_in_mm <- as.numeric(sizes$Length_in_mm)
-    qplot(x = snpdat, y = genedat, color = snpdat, size = size_in_mm, xlim = c(-0.5, 2.5), ylab = "log(2)FPKM", xlab = "SNP_Measurement",  
-          main = paste(chosen.snp,"_",chosen.gene,"_expression_level_FDR = ",FDR,"_rsID=",this.rsid))
-    ggsave(filename = paste(chosen.snp,"_",this.rsid,"_",chosen.gene,"_expr_",nameofdata,"tumor_size_plot.png", sep = ""))
+    ggplot(dat, aes(snpdat,genedat)) +
+      geom_point(aes(color=snpdat, size=size_in_mm)) +
+      geom_text(aes(label=samps),hjust=1.5, vjust=0) +
+      labs(ylab = "log(2)FPKM", xlab = "SNP_Measurement", title = paste(chosen.snp,"_",chosen.gene,"_exprFDR = ",FDR,"_rsID=",this.rsid)) +
+      xlim(-0.5, 2.5)
+    #qplot(x = snpdat, y = genedat, color = snpdat, size = size_in_mm, xlim = c(-0.5, 2.5), ylab = "log(2)FPKM", xlab = "SNP_Measurement",  
+    #      main = paste(chosen.snp,"_",chosen.gene,"_expr_FDR = ",FDR,"_rsID=",this.rsid))
+    ggsave(filename = paste(chosen.snp,"_",this.rsid,"_",chosen.gene,"_expression_level_",nameofdata,"tumor_size_plot.png", sep = ""))
     synStore(File(paste(chosen.snp,"_",this.rsid,"_",chosen.gene,"_expression_level_",nameofdata,"tumor_size_plot.png", sep = ""), parentId='syn8030585'), executed=this.file, used = used)
   }
 }
