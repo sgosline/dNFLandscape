@@ -21,7 +21,8 @@ analysis/2017-01-11/*.txt
 analysis/2017-02-13/*.txt
 analysis/2017-02-23/*.txt
 analysis/2017-01-11/*.txt
-analysis/2017-12-20/*.*.txt
+analysis/2017-12-20/dermalNF_updated_proteomics_*.Ratio_normalized.txt
+analysis/2017-12-20/*.txt
 analysis/2016-12-28/*.txt
 analysis/2016-12-22/*.txt
 analysis/2016-12-16/*.txt
@@ -29,7 +30,7 @@ analysis/2016-12-12/*.txt
 analysis/2016-12-01/*.txt
 analysis/2016-11-23/*.txt
 analysis/2016-11-16-2/*.txt
-
+analysis/2016-11-21/*.txt
 
 
 
