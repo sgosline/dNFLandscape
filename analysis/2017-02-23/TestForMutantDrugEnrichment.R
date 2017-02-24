@@ -1,6 +1,6 @@
 source("../../bin/wgsAnalysis.R")
 library(dplyr)
-this.file =
+this.file = "https://raw.githubusercontent.com/allaway/dNFLandscape/776770a72dba97d0e7e20e97dc47d56d7b48b3df/analysis/2017-02-23/TestForMutantDrugEnrichment.R"
 
 testgenes<-filter(all.gene.muts, Effect %in% c("MODERATE", "HIGH"))
 testgenes<-count(dplyr::select(distinct(dplyr::select(testgenes, Sample, Gene)), Gene))
@@ -76,6 +76,64 @@ TestForDrugTargets <- function(comut) {
 }
 
 hyper<-TestForDrugTargets(list)
+hyper<-as.data.frame(hyper)
 
-write.table('cNF_somatic_muts_drug_enrichment.txt', sep = "\t")
-synStore(File('cNF_somatic_muts_drug_enrichment.txt', parentId = ), used = c("syn7341038", "syn8118065"))
+write.table(hyper,'cNF_somatic_muts_drug_enrichment.txt', sep = "\t")
+synStore(File('cNF_somatic_muts_drug_enrichment.txt', parentId = "syn8319243"), used = c("syn7341038", "syn8118065"), executed = this.file)
+
+library(synapseClient)
+library(ggplot2)
+library(rJava)
+library(rcdk)
+synapseLogin()
+library(pheatmap)
+library(viridis)
+
+hyper<-read.table(synGet("syn8319288")@filePath, header = TRUE, sep = "\t")
+
+###NF1 cNF somatic mutation hits 
+sigs<-filter(hyper, Hypergeo_pval<0.05)
+sig.data<-dplyr::select(sigs, Structure_ID, Original_molecule_SMILES, Supplier_Data_1,Supplier_Data_2,Supplier_Data_3)
+
+mol<-parse.smiles(as.character(sig.data$Original_molecule_SMILES))
+
+#write.molecules(mol, filename = 'NF1_TCGA_drugs.sdf')
+#view.molecule.2d(mol)
+
+fps <- lapply(mol, get.fingerprint, type="extended")
+fp.sim <- fp.sim.matrix(fps, method = "tanimoto")
+rownames(fp.sim) <- sig.data$Structure_ID
+colnames(fp.sim) <- sig.data$Structure_ID
+fp.dist <- 1- fp.sim
+pheatmap(fp.sim, border_color = NA, color = magma(n = 10000))
+
+clust<-hclust(as.dist(fp.dist))
+plot(clust)
+
+
+###NF1 TCGA Comutant Hits
+x<-synGet("syn8292948")@filePath
+data<-read.table(x)
+sigs<-filter(data, Hypergeo_pval<=0.0005)
+sig.data<-select(sigs, Structure_ID, Original_molecule_SMILES, Supplier_Data_1,Supplier_Data_2,Supplier_Data_3)
+sig.data<-distinct(sig.data)
+
+mol<-parse.smiles(as.character(sig.data$Original_molecule_SMILES))
+
+#write.molecules(mol, filename = 'NF1_TCGA_drugs.sdf')
+#view.molecule.2d(mol)
+
+fps <- lapply(mol, get.fingerprint, type="extended")
+fp.sim <- fp.sim.matrix(fps, method = "tanimoto")
+rownames(fp.sim) <- sig.data$Structure_ID
+colnames(fp.sim) <- sig.data$Structure_ID
+fp.dist <- 1- fp.sim
+
+png("tanimotoSimilarityOfHits.png")
+pheatmap(fp.sim, border_color = NA, color = magma(n = 10000))
+dev.off()
+
+synStore(File('tanimotoSimilarityOfHits.png', parentId = "syn8319243"), used = c("syn7341038", "syn8118065", "syn8292948"), executed = this.file)
+
+
+
