@@ -23,7 +23,6 @@ vignettes/*.pdf
 *.pdf
 *.png
 *.gmt
-*.txt
 *.m2
 *.tsv
 *.csv
