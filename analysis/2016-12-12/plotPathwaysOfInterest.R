@@ -23,7 +23,11 @@ plotPathwayAcrossScores<-function(patient.sample.vars,patient.sample.muts,pathwa
   ##calculate p-value
   try(pval<-format(t.test(score~pathwayMutated,data=df)$p.value,digits=4), silent = TRUE)
   ##make color by patient and shape by mutation
-  p<-ggplot()+geom_boxplot(data=df,aes(x=pathwayMutated,y=score), outlier.color = "NA")+geom_jitter(data=df,aes(x=pathwayMutated,y=score,shape=pathwayMutated,color=patient))+ggtitle(paste(pathwayGenes[1],collapse="_",'mutation status by\n',testName,'scores\np=',pval))+theme(plot.title=element_text(hjust=0.5))
+  p<-ggplot()+geom_boxplot(data=df,aes(x=pathwayMutated,y=score), outlier.color = "NA", color = pathwayMutated)+
+    scale_color_manual(c(TRUE=="green", FALSE=="blue"))+
+    geom_jitter(data=df,aes(x=pathwayMutated,y=score,shape=pathwayMutated,color=patient))+
+    ggtitle(paste(pathwayGenes[1],collapse="_",'mutation status by\n',testName,'scores\np=',pval))+
+    theme(plot.title=element_text(hjust=0.5))
   print(p)
   #p<-ggplot()+geom_boxplot(data=df,aes(x=pathwayMutated,y=score))+geom_jitter(data=df,aes(x=pathwayMutated,y=score,color=pathwayMutated))+ggtitle(paste(pathwayGenes[1],collapse="_"),'mutation status by\n',testName,'scores')
   ggsave(paste(paste(pathwayGenes[1],collapse="_"),'mutationsBy',testName,'score.png',sep='_'))
@@ -126,14 +130,14 @@ for(x in pathway.list){
   hall<-as.numeric(hallmark.ssGSEA[y,])
   names(hall)<-colnames(hallmark.ssGSEA)
   ##########
-  #plotPathwayAcrossScores(hall,gl.vars.by.sample,x,paste('HallmarkGermline',sep='',y))
+  plotPathwayAcrossScores(hall,gl.vars.by.sample,x,paste('HallmarkGermline',sep='',y))
   pathwayname <- capture.output(print(x[1], max.levels = 0))
   pathwayname <- sub(pattern = "[1]", pathwayname, replacement = "", fixed = TRUE)
   pvalhallmarkGermline <- c(paste(pathwayname," ",y), calculatePvalues(hall,gl.vars.by.sample,x,paste('HallmarkGermline',sep='',y)))
   names(pvalhallmarkGermline) <- c("Pathway", "p.value")
   pvalhallmarkGermline.df <- rbind(pvalhallmarkGermline.df, pvalhallmarkGermline)
   #########
-  #plotPathwayAcrossScores(hall,som.vars,x,paste('HallmarkSomatic',sep='',y)) 
+  plotPathwayAcrossScores(hall,som.vars,x,paste('HallmarkSomatic',sep='',y)) 
   pathwayname <- capture.output(print(x[1], max.levels = 0))
   pathwayname <- sub(pattern = "[1]", pathwayname, replacement = "", fixed = TRUE)
   pvalhallmarkSomatic <- c(paste(pathwayname," ",y), calculatePvalues(hall,som.vars,x,paste('HallmarkSomatic',sep='',y)))
