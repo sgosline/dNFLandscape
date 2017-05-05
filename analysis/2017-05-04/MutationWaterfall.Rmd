@@ -12,7 +12,7 @@ library(stringr)
 library(synapseClient)
 library(GenVisR)
 
-synapseLogin("allawayr", "Warbler44")
+synapseLogin()
 cosmic <- read.table(synGet("syn9754614")@filePath, sep = "\t", header = TRUE, colClasses = "character")
 mut<-read.table(synGet("syn5839666")@filePath, sep = "\t", header = TRUE, colClasses = "character")
 mut$chr <- str_extract(mut$Chromosome, "\\d")
