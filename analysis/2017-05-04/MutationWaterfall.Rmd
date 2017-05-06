@@ -27,7 +27,7 @@ soms <- filter(mut, Mutation_Status == "Somatic" & Variant_Classification != "Si
 germs <- filter(mut, Mutation_Status == "Germline" & Variant_Classification != "Silent" & Variant_Classification != "Intron"
                 & Variant_Classification != "In_Frame_Ins" & Variant_Classification != "In_Frame_Del")
 set.seed(42)
-cols <- c("blue", "red", "black", "orange", "green", "black", "brown")
+cols <- c("blue", "red", "black", "orange", "green", "pink", "yellow")
 
 ```
 
@@ -39,8 +39,7 @@ waterfall(soms, fileType = "MAF", mainDropMut = TRUE, mainRecurCutoff = 0.1, mai
 ###COSMIC listed genes with somatic mutations, no cutoff
 ```{r, echo=FALSE, fig.height=10, fig.width=8, message=FALSE, warning=FALSE}
 
-waterfall(soms %>% filter(Hugo_Symbol %in% cosmic$Gene.Symbol), fileType = "MAF", 
-          mainRecurCutoff = 0.0, mainDropMut = TRUE, mainPalette = cols)
+waterfall(soms %>% filter(Hugo_Symbol %in% cosmic$Gene.Symbol), fileType = "MAF", mainRecurCutoff = 0.0, mainDropMut = TRUE, mainPalette = cols)
 ```
 
 ###All germline mutations, no cutoff
