@@ -44,6 +44,7 @@ library(grid)
 hallmark.ssGSEA$pathway<- rownames(hallmark.ssGSEA)
 hallmark.ssGSEA <- tidyr::gather(hallmark.ssGSEA, patient, measurement, 1:33)
 hallmark.ssGSEA$pathway <- sub("HALLMARK_", "", hallmark.ssGSEA$pathway)
+hallmark.ssGSEA$pathway <- sub("_", " ", hallmark.ssGSEA$pathway)
 hallmark.ssGSEA$pathway <- factor(hallmark.ssGSEA$pathway, levels = levels(reorder(hallmark.ssGSEA$pathway, -hallmark.ssGSEA$measurement, FUN = median)))
 
 hallmark.ssGSEA$mean <- ave(hallmark.ssGSEA$measurement, as.factor(hallmark.ssGSEA$pathway), FUN=mean)
