@@ -14,7 +14,8 @@ library(GenVisR)
 
 synapseLogin()
 cosmic <- read.table(synGet("syn9754614")@filePath, sep = "\t", header = TRUE, colClasses = "character")
-mut<-read.table(synGet("syn5839666")@filePath, sep = "\t", header = TRUE, colClasses = "character")
+mut<-read.table(synGet("syn5839666")@filePath, sep = "\t", header = TRUE, colClasses = "character", stringsAsFactors = TRUE)
+
 mut$chr <- str_extract(mut$Chromosome, "\\d")
 names(mut)[names(mut)=="Mutation_Type"] <- "Variant_Classification"
 names(mut)[names(mut)=="Sample_ID"] <- "Tumor_Sample_Barcode"
@@ -22,43 +23,41 @@ names(mut)[names(mut)=="Sample_ID"] <- "Tumor_Sample_Barcode"
 mut$cosmic[mut$Hugo_Symbol %in% cosmic$Gene.Symbol] <- "T"
 mut$cosmic[!mut$Hugo_Symbol %in% cosmic$Gene.Symbol] <- "F"
 
-soms <- filter(mut, Mutation_Status == "Somatic" & Variant_Classification != "Silent" & Variant_Classification != "Intron"
-               & Variant_Classification != "In_Frame_Ins" & Variant_Classification != "In_Frame_Del")
-germs <- filter(mut, Mutation_Status == "Germline" & Variant_Classification != "Silent" & Variant_Classification != "Intron"
-                & Variant_Classification != "In_Frame_Ins" & Variant_Classification != "In_Frame_Del")
-set.seed(42)
-<<<<<<< HEAD
-cols <- c("blue", "red", "black", "orange", "green", "pink", "yellow")
-=======
-cols <- c("blue", "red", "black", "orange", "green", "black", "brown")
->>>>>>> 6b2105db7ea30b3652e7478660458c2977a8e266
+soms <- filter(mut, Mutation_Status == "Somatic" & Variant_Classification != "Silent" & Variant_Classification != "Intron" & Variant_Classification != "In_Frame_Ins" & Variant_Classification != "In_Frame_Del")
 
+germs <- filter(mut, Mutation_Status == "Germline" & Variant_Classification != "Silent" & Variant_Classification != "Intron" & Variant_Classification != "In_Frame_Ins" & Variant_Classification != "In_Frame_Del")
+
+set.seed(42)
+
+cols <- c("#17B890", "#FF6F59", "#D7263D", "black", "black", "black", "black", "#A7BBEC", "#FFF07C", "black", "black", "black", "black", "black", "black", "black", "black", "black")
 ```
 
 ###All somatic mutations with over 10% occurrence rate
 ```{r, echo=FALSE, fig.height=10, fig.width=8, message=FALSE, warning=FALSE}
+svg(file = "Soms10perc.svg", height = 11, width = 10)
 waterfall(soms, fileType = "MAF", mainDropMut = TRUE, mainRecurCutoff = 0.1, mainPalette = cols)
+dev.off()
 ```
 
 ###COSMIC listed genes with somatic mutations, no cutoff
 ```{r, echo=FALSE, fig.height=10, fig.width=8, message=FALSE, warning=FALSE}
-
-<<<<<<< HEAD
-waterfall(soms %>% filter(Hugo_Symbol %in% cosmic$Gene.Symbol), fileType = "MAF", mainRecurCutoff = 0.0, mainDropMut = TRUE, mainPalette = cols)
-=======
+svg(file = "SomsCOSMICFilt.svg", height = 11, width = 10)
 waterfall(soms %>% filter(Hugo_Symbol %in% cosmic$Gene.Symbol), fileType = "MAF", 
           mainRecurCutoff = 0.0, mainDropMut = TRUE, mainPalette = cols)
->>>>>>> 6b2105db7ea30b3652e7478660458c2977a8e266
+dev.off()
 ```
 
 ###All germline mutations, no cutoff
 ```{r, echo=TRUE, fig.height=10, fig.width=8, message=FALSE, warning=FALSE}
-waterfall(germs, fileType = "MAF", mainRecurCutoff = 0.8, mainDropMut = TRUE, mainPalette = cols)
+svg(file = "Germs80perc.svg", height = 11, width = 10)
+waterfall(germs, fileType = "MAF", mainRecurCutoff = 0.7, mainDropMut = TRUE, mainPalette = cols)
+dev.off()
 ```
 
 ###COSMIC listed genes with germline mutations, no cutoff
 ```{r, echo=FALSE, fig.height=10, fig.width=8, message=FALSE, warning=FALSE}
-
+svg(file = "GermsCOSMICFilt.svg", height = 11, width = 10)
 waterfall(germs %>% filter(Hugo_Symbol %in% cosmic$Gene.Symbol), fileType = "MAF", 
           mainRecurCutoff = 0.0, mainDropMut = TRUE, mainPalette = cols)
+dev.off()
 ```

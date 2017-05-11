@@ -43,23 +43,24 @@ library(tidyr)
 library(grid)
 hallmark.ssGSEA$pathway<- rownames(hallmark.ssGSEA)
 hallmark.ssGSEA <- tidyr::gather(hallmark.ssGSEA, patient, measurement, 1:33)
-hallmark.ssGSEA$pathway <- sub("HALLMARK_", "", hallmark.ssGSEA$pathway)
-hallmark.ssGSEA$pathway <- sub("_", " ", hallmark.ssGSEA$pathway)
-hallmark.ssGSEA$pathway <- factor(hallmark.ssGSEA$pathway, levels = levels(reorder(hallmark.ssGSEA$pathway, -hallmark.ssGSEA$measurement, FUN = median)))
+hallmark.ssGSEA$pathway <- gsub("HALLMARK_", "", hallmark.ssGSEA$pathway)
+hallmark.ssGSEA$pathway <- gsub("_", " ", hallmark.ssGSEA$pathway)
+hallmark.ssGSEA$pathway <- factor(hallmark.ssGSEA$pathway, levels = levels(reorder(hallmark.ssGSEA$pathway, hallmark.ssGSEA$measurement, FUN = median)))
 
-hallmark.ssGSEA$mean <- ave(hallmark.ssGSEA$measurement, as.factor(hallmark.ssGSEA$pathway), FUN=mean)
+hallmark.ssGSEA$median <- ave(hallmark.ssGSEA$measurement, as.factor(hallmark.ssGSEA$pathway), FUN=median)
 
-ggplot(hallmark.ssGSEA, aes(x=pathway, y=measurement, fill = mean)) +
+ggplot(hallmark.ssGSEA, aes(x=pathway, y=measurement, fill = median)) +
   geom_boxplot() + 
-  scale_fill_viridis(option = "B") +
-  theme(legend.position="none", axis.text.x=element_text(angle=60,hjust=1)) +
-  theme(plot.margin=unit(c(1,1,1,1), "cm")) +
-  labs(x = "Hallmark Gene Set", y = "GSEA Measurement")
+  scale_fill_viridis(option = "C") +
+  theme(legend.position="none", axis.text.x=element_text(angle=45,hjust=1)) +
+  theme(plot.margin=unit(c(1,1,1,1), "cm"), text=element_text(size = 13)) +
+  labs(x = "Hallmark Gene Set", y = "ssGSEA score") +
+  coord_flip()
 
-ggsave("hallmarks.png")
+ggsave("ssGSEA_hallmarks_replot_review.png")
+synStore(File('ssGSEA_hallmarks_replot_review.png', parentId = 'syn7818711'), used = c('syn6156140', "syn5556216"), executed = this.file, activityName = 'ssGSEA')
 
 library(pheatmap)
-
 means <- as.data.frame(rowMeans(hallmark.ssGSEA))
 colnames(means) <- c("Mean ssGSEA Value")
 means$id<-rownames(means)
@@ -68,5 +69,4 @@ foo <- full_join(hallmark.ssGSEA, means)
 rownames(foo) <- foo$id
 foo <- select(foo, -id)
 pheatmap(foo, color = viridis(100), cluster_cols = FALSE, fontsize_row = 7, fontsize_col = 10, border_color = NA, cellwidth = 7, cellheight = 7)
-synStore(File('avg_hallmark_ssGSEA.txt', parentId = 'syn7818711'), used = c('syn5556216','syn6156140'), executed = this.file, activityName = 'ssGSEA')
 
