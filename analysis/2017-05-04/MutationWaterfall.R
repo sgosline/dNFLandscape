@@ -6,6 +6,8 @@ library(GenVisR)
 
 synapseLogin()
 
+##this is not the final version - check r markdown version for final 
+
 mut<-read.table(synGet("syn5839666")@filePath, sep = "\t", header = TRUE, colClasses = "character")
 mut$chr <- str_extract(mut$Chromosome, "\\d+")
 names(mut)[names(mut)=="Mutation_Type"] <- "Variant_Classification"

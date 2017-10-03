@@ -134,3 +134,12 @@ analysis/2016-12-20/dermalNF_updated_proteomics_X86.Ratio_normalized.txt
 analysis/2016-12-20/dermalNF_updated_proteomics_X87.Ratio_normalized.txt
 
 analysis/2016-12-20/dermalNF_updated_proteomics_X88.Ratio_normalized.txt
+analysis/2017-07-20/.DS_Store
+analysis/2017-06-06/.DS_Store
+analysis/.DS_Store
+data/.DS_Store
+analysis/2017-07-20/CREBBP_pvalhallmarkSomatic.txt
+analysis/2017-07-20/CREBBP_pvalCIBERSORTSomatic.txt
+analysis/2017-07-20/CREBBP_CDC27_pvalCIBERSORTSomatic.txt
+*.txt
+.DS_Store

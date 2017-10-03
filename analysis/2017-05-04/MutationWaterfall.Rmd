@@ -61,3 +61,13 @@ waterfall(germs %>% filter(Hugo_Symbol %in% cosmic$Gene.Symbol), fileType = "MAF
           mainRecurCutoff = 0.0, mainDropMut = TRUE, mainPalette = cols)
 dev.off()
 ```
+
+```{r}
+soms <- filter(mut, Mutation_Status == "Germline") %>% filter(Hugo_Symbol %in% c("CDC27", "CREBBP"))
+svg(file = "CREBBPCDC27perc.svg", height = 11, width = 10)
+waterfall(soms, fileType = "MAF", mainDropMut = TRUE, mainPalette = cols)
+dev.off()
+```
+
+```
+

@@ -39,10 +39,11 @@ plotPathwayAcrossScores<-function(patient.sample.vars,patient.sample.muts,pathwa
   }
 }
 
+
 calculatePvalues <- function(patient.sample.vars,patient.sample.muts,pathwayGenes,testName) {
   overlap<-intersect(names(patient.sample.vars),colnames(patient.sample.muts))
   print(paste('We have',length(overlap),'samples to evaluate significant difference'))
-  index <- row.names(patient.sample.muts) %in% pathwayGenes[-1]
+  index <- row.names(patient.sample.muts) %in% pathwayGenes
   pathwayMutated <- apply(patient.sample.muts[index, overlap, drop = FALSE], 2, any)
   df<-data.frame(pathwayMutated = pathwayMutated, score = patient.sample.vars[overlap])
   pval<-1
@@ -72,7 +73,7 @@ colnames(est.scores)<-tolower(patient_tumor_number_rna(colnames(est.scores),quan
 
 cib.paths=c("Mast.cells.resting","Macrophages.M2")
 
-pathway.list <- read.table('cdc27_crebbp.txt', header = FALSE, sep = "\t")
+pathway.list <- data.frame("CREBBP" = "CREBBP")
 
 pvalGermline.df <- data.frame("Signature"=c("placeholder"), "Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)
 pvalSomatic.df <- data.frame("Signature"=c("placeholder"), "Pathway"=c("placeholder"), "p.value"=c(1), stringsAsFactors = FALSE)
