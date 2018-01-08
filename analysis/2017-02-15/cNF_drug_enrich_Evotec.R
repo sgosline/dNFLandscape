@@ -14,8 +14,8 @@ drugdat.filtered <- filter(drugdat.filtered, N_quantitative != 0)
 
 ## obtain data to map Uniprot id with Hugo Genes
 mart <- useMart("ENSEMBL_MART_ENSEMBL", "hsapiens_gene_ensembl")
-bm <- getBM(attributes = c("hgnc_symbol", "uniprot_swissprot"), mart = mart)
-bm <- filter(bm, uniprot_swissprot != "")
+bm <- getBM(attributes = c("hgnc_symbol", "uniprotswissprot"), mart = mart)
+bm <- filter(bm, uniprotswissprot != "")
 colnames(bm) <- c("Hugo_Gene", "Uniprot_accession_numbers")
 
 ## map uniprot targets to hugo genes - generate list of dataframes, each

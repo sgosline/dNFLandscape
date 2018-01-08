@@ -12,14 +12,6 @@ listofcomuts <- dlply(.data = topNF1comut.genie, .variables = "ONCOTREE_CODE")
 topNF1comut.TCGA <- as.data.frame(synTableQuery("SELECT * FROM syn8069190")@values)
 listofcomuts.TCGA <- dlply(.data = topNF1comut.TCGA, .variables = " Cancer_Type")
 
-cNF_genes <- c("CYLD", "FLI1", "HOXA13", "MN1", "NSD1", "RHOA", "EXT1", "IL6ST", "MAF",
-               "NFKB2", "TSC1", "COL1A1", "DDX5", "RAD21", "ELL", "PBRM1", "RUNX1", "NF1",
-               "MNX1")
-mut_freq <- c(2,2,2,2,2,2,3,3,3,3,3,5,5,7,9,9,12,17,22)
-cNF_genes <- as.data.frame(cNF_genes)
-mut_freq <- as.data.frame(mut_freq)
-cNF<-cbind(cNF_genes, mut_freq)
-
 ## pull evotec data to map compound names to structure IDs
 druglist <- read.table(file=synGet("syn5522649")@filePath, sep = ",", header = TRUE, fill = TRUE, quote = "\"")
 compound.data <- select(druglist, name, target)

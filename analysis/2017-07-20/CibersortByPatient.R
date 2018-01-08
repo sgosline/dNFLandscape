@@ -1,5 +1,6 @@
 source("../../bin/wgsAnalysis.R")
 source("../../analysis/2016-09-20/geneSampleMatrix.R")
+source("../../bin/ssGSEAandGSVA_perPatient.R")
 library(ggplot2)
 library(ggbeeswarm)
 
@@ -19,7 +20,7 @@ moreids<-synTableQuery("SELECT * FROM syn5556216")@values %>% filter(!is.na(RNAS
 cib.scores<-cib.scores %>% left_join(moreids)
 rownames(cib.scores) <- cib.scores$sampleIdentifier
 
-cib.scores$patient <- t(as.data.frame(strsplit(cib.scores$sampleIdentifier, split = "tumor"))[1,])
+cib.scores$patient <- as.character(t(as.data.frame(strsplit(cib.scores$sampleIdentifier, split = "tumor"))[1,]))
 
 cib.scores <- cib.scores %>% group_by(patient) %>% 
   mutate("var.mast" = var(Mast.cells.resting), "var.mac" = var(Macrophages.M2))
@@ -84,3 +85,42 @@ cor(all.data$Mast.cells.resting, all.data$Macrophages.M2, method = "spearman")
 
 ggplot(all.data) +
   geom_point(aes(x=HALLMARK_COMPLEMENT, y=Mast.cells.resting))
+
+
+ihc<-read.table("../../data/Carroll_cNF_IHC.txt", sep = "\t", header = T) 
+ihc$CD117 <- gsub("\\%", "", ihc$CD117)
+ihc$Iba1 <- gsub("\\%", "", ihc$Iba1)
+ihc$CD117 <- as.numeric(ihc$CD117)
+ihc$Iba1 <- as.numeric(ihc$Iba1)
+ihc$patient <- gsub("-\\d+-.+", "", ihc$X)
+ihc$patient <- gsub("^0", "", ihc$patient)
+ihc$patient <- gsub("^", "patient", ihc$patient)
+
+mast.cib <- ungroup(all.data) %>% dplyr::select(patient, Mast.cells.resting, Macrophages.M2)
+
+mast <- ihc %>% dplyr::select(patient, CD117) %>%
+  inner_join(mast.gsva) %>% 
+  distinct() %>% 
+  filter(!is.na(CD117)) %>%
+  mutate()
+
+
+ggplot(data = ihc) +
+  geom_boxplot(aes(x= patient, y= CD117, fill = patient), color = "black")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave("MastCells_IHC.png", width = 5, height = 4)
+
+ggplot(data = mast.cib %>% filter(patient %in% unique(ihc$patient))) +
+  geom_boxplot(aes(x= patient, y= Mast.cells.resting, fill = patient), color = "black")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave("MastCells_ssGSEA.png", width = 5, height = 4)
+
+ggplot(data = ihc) +
+  geom_boxplot(aes(x= patient, y= Iba1, fill = patient), color = "black")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave("Macrophages_IHC.png", width = 5, height = 4)
+
+ggplot(data = mast.cib %>% filter(patient %in% unique(ihc$patient))) +
+  geom_boxplot(aes(x= patient, y= Macrophages.M2, fill = patient), color = "black")+
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+ggsave("Macrophages_ssGSEA.png", width = 5, height = 4)

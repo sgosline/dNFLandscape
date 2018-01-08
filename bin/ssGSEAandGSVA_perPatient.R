@@ -39,4 +39,4 @@ hallmark.sigs <- getGmt("../../data/h.all.v5.2.symbols.gmt", collectionType = Br
 this.file <- "https://github.com/allaway/dNFLandscape/blob/master/analysis/2016-11-22/GSVA_ENCODE_dNF_mini.R"
 
 ## hallmarks signature gene set collection GSVA
-hallmark.ssGSEA <- gsva(comb.norm2, hallmark.sigs, rnaseq=T, method = "gsva")$es.obs
+hallmark.ssGSEA <- gsva(comb.norm2, hallmark.sigs, rnaseq=T, method = "ssgsea")$es.obs
