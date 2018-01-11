@@ -10,8 +10,8 @@ patients<-sapply(samples,function(x) unlist(strsplit(x,split='_'))[2])
 
 plotVafByPairs<-function(sampMat,patient,mutDf){
     somDf<-subset(mutDf,Status%in%c('StrongSomatic','LikelySomatic'))#,'LikelyLOH'))
-    somDf<-subset(somDf,!Chr%in%c('chrX','chrY'))
-    pdf(paste('patient',patient,'varAlleleFreqBySamp.pdf',sep='_'))
+    somDf<-subset(somDf,!Chr%in%c('chrX','chrY'))%>%subset(Var_Type=='SNV')%>%subset(Depth>50)
+    pdf(paste('patient',patient,'varAlleleFreqBySampSNV.pdf',sep='_'))
     apply(sampMat,2,function(x){
         pairs<-subset(somDf,Sample%in%x)
         if(length(unique(pairs$Sample))==1)

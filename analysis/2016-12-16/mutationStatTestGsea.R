@@ -18,7 +18,7 @@ checkForMutationCorrelations<-function(patient.sample.vars,patient.sample.muts,p
   tpvals<-apply(patient.sample.muts[,overlap],1,function(x){
     if(length(unique(x))==1)
       return(1.0)
-    else if(which(x)<2)
+    else if(length(which(x))<2)
       return(1.0)
     else
         return(t.test(patient.sample.vars[overlap],x)$p.value)})
