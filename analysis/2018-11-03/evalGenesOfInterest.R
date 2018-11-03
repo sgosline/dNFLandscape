@@ -15,7 +15,7 @@ genelist <-c(genelist,'AIF1','SOX2','PRSS56')
 
 source("../../../dermalNF/bin/dermalNFData.R")
 
-this.script='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2017-11-30/evalGenesOfInterest.R'
+this.script='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2018-11-03/evalGenesOfInterest.R'
 #get rna data
 rna.annot<-rna_annotations()
 rna<-rna_count_matrix(doLogNorm=TRUE,minCount=5)
@@ -38,7 +38,13 @@ colnames(rna)<-paste(pats,rna.annot$specimenID)
 rna<-rna_count_matrix(doNorm=TRUE,minCount=0)
 
 red.set<-rna[match(genelist,rownames(rna)),]
-pheatmap(log10(0.00001+red.set),annotation_col=data.frame(Patient=pats),cellwidth=10,cellheight=10,
+
+##now get diffex
+diffex.set<-read.table('../2016-05-03/diffExGenesBetweenDermalAndAllENCODE.txt',header=T)
+diffex.genes<-diffex.set[match(genelist,rownames(diffex.set)),]
+diffex.set$Gene=rownames(diffex.set)
+require(tidyverse)
+pheatmap(log10(0.00001+red.set),annotation_col=data.frame(Patient=pats),cellwidth=10,cellheight=10,annotation_row=select(diffex.genes,c('logFC','adj.P.Val')),
          clustering_distance_cols = 'correlation',file='signalingProteinGeneExpress.pdf')
 synStore(File('signalingProteinGeneExpress.pdf',parentId='syn6242409'),executed=list(this.script))
 
@@ -47,10 +53,9 @@ pats.only<-rna[,names(pats)[which(pats%in%c("patient2",'patient11'))]]
 
 ranked<-data.frame(apply(rna,2,function(x) rank(x)/length(x)))#function(x) length(x)-rank(x)))
 ranked$Gene<-rownames(ranked)
-require(tidyverse)
 res<-tidyr::gather(ranked,key='id',value='Rank',-Gene)%>%
   left_join(select(rna.annot,id,specimenID,individualID),by="id")
-newres<-res%>%mutate(inList=Gene%in%genelist)
+newres<-res%>%mutate(inList=Gene%in%genelist)%>%left_join(diffex.set,by='Gene')
 
 
 require(ggplot2)
@@ -75,6 +80,8 @@ genesOfInterest$Gene<-factor(genesOfInterest$Gene,levels=gene.means$Gene[order(g
 
 
 p2<-ggplot(genesOfInterest)+geom_point(aes(x=Gene,y=Rank,col=Sample,shape=Patient))+theme(axis.text.x=element_text(angle = -90, hjust = 0))+ggtitle('Rank of Selected genes in cNF patient samples')
+
+p3<-ggplot(genesOfInterest)+geom_point(aes(x=Gene,y=logFC,col=adj.P.Val))+theme(axis.text.x=element_text(angle = -90, hjust = 0))+ggtitle('DiffEx of Selected genes in cNF patient samples')
 ggsave('AllGeneExpressionRank2pats.pdf')
 
 synStore(File('AllGeneExpressionRank2pats.pdf',parentId='syn6242409'),executed=list(this.script))
