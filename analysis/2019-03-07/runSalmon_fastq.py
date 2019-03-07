@@ -27,8 +27,10 @@ df['samp'] = df['name'].map(format)
 gencodeV29=syn.get('syn18134565').path
 while not os.path.exists(gencodeV29):
     time.sleep(1)
-ind_cmd='salmon index --gencode -t '+gencodeV29+'--i gencode_v29_index'
-os.system(ind_cmd)
+ind_cmd='./salmon index --gencode -t '+gencodeV29+' -i gencode_v29_index'
+print(ind_cmd)
+if not os.path.exists('gencode_v29_index'):
+    os.system(ind_cmd)
 
 grouped = df.groupby('samp')
 for name, group in grouped:
@@ -54,7 +56,8 @@ for name, group in grouped:
     # remove fastq files
 
     # run salmon
-    scmd='salmon quant -i gencode_v29_index -l A -1 '+" ".join(file_list_f1)+' -2 '+" ".join(file_list_f2)+' -o '+os.path.join("quants",name)
+    scmd='./salmon quant -i gencode_v29_index -l A -1 '+" ".join(file_list_f1)+' -2 '+" ".join(file_list_f2)+' -o '+os.path.join("quants",name)
+    print(scmd)
     log.debug(scmd)
     os.system(scmd)
     for f in file_list_f1:
