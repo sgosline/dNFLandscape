@@ -62,8 +62,9 @@ require(ggplot2)
 
 newres$Sample <- sapply(newres$specimenID,function(x) gsub("patient","Patient ",gsub("tumor"," Tumor ",x)))
 newres$Patient <-sapply(newres$Sample,function(x) gsub(" Tumor [0-9]*","",x))
+write.csv(unique(newres$Gene[intersect(which(newres$adj.P.Val<0.01),which(newres$logFC>1))]),'cNFdownRegGenes2x_q01.txt',quote=F,row.names=F)
 
-genesOfInterest<-subset(newres,inList==TRUE)
+genesOfInterest<-subset(newres,inList==TRUE)%>%rename('Log2 Fold Change'=logFC)
 
 gene.means<-genesOfInterest%>%group_by(Gene)%>%summarize(meanRank=mean(Rank))
 
@@ -74,6 +75,10 @@ genesOfInterest$Gene<-factor(genesOfInterest$Gene,levels=gene.means$Gene[order(g
 p2<-ggplot(genesOfInterest)+geom_point(aes(x=Gene,y=Rank,col=Patient))+theme(axis.text.x=element_text(angle = -90, hjust = 0))+ggtitle('Rank of Selected genes in cNF patient samples')
 ggsave('AllGeneExpressionRank.pdf')
 synStore(File('AllGeneExpressionRank.pdf',parentId='syn6242409'),executed=list(this.script))
+
+p3<-ggplot(subset(genesOfInterest,!is.na(`Log2 Fold Change`)))+geom_point(aes(x=Gene,y=`Log2 Fold Change`,col=adj.P.Val))+theme(axis.text.x=element_text(angle = -90, hjust = 0))+ggtitle('Differential expression of selected genes in normal skin\n samples compared to cNF patient samples')
+ggsave('diffexofselectedGenes.png')
+
 genesOfInterest<-subset(genesOfInterest,Patient%in%c('Patient 2','Patient 11'))
 gene.means<-genesOfInterest%>%group_by(Gene)%>%summarize(meanRank=mean(Rank))
 genesOfInterest$Gene<-factor(genesOfInterest$Gene,levels=gene.means$Gene[order(gene.means$meanRank)])
@@ -81,7 +86,6 @@ genesOfInterest$Gene<-factor(genesOfInterest$Gene,levels=gene.means$Gene[order(g
 
 p2<-ggplot(genesOfInterest)+geom_point(aes(x=Gene,y=Rank,col=Sample,shape=Patient))+theme(axis.text.x=element_text(angle = -90, hjust = 0))+ggtitle('Rank of Selected genes in cNF patient samples')
 
-p3<-ggplot(genesOfInterest)+geom_point(aes(x=Gene,y=logFC,col=adj.P.Val))+theme(axis.text.x=element_text(angle = -90, hjust = 0))+ggtitle('DiffEx of Selected genes in cNF patient samples')
 ggsave('AllGeneExpressionRank2pats.pdf')
 
 synStore(File('AllGeneExpressionRank2pats.pdf',parentId='syn6242409'),executed=list(this.script))
