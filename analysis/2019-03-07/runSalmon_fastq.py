@@ -21,7 +21,7 @@ tbl = syn.tableQuery("SELECT specimenID,individualID,name,id FROM syn11614202 WH
 df = tbl.asDataFrame()
 
 format = lambda x: x.replace('.fastq.gz','').split('_')[5]
-df['id'] = df['name'].map(format)
+df['samp'] = df['name'].map(format)
 
 #first run the index file
 gencodeV29=syn.get('syn18134565').path
@@ -30,7 +30,7 @@ while not os.path.exists(gencodeV29)
 ind_cmd='salmon index --gencode -t '+gencodeV29+'--i gencode_v29_index'
 os.system(ind_cmd)
 
-grouped = df.groupby('id')
+grouped = df.groupby('samp')
 for name, group in grouped:
     file_list_f1 = []
     file_list_f2 = []
