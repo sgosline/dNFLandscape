@@ -25,7 +25,7 @@ df['samp'] = df['name'].map(format)
 
 #first run the index file
 gencodeV29=syn.get('syn18134565').path
-while not os.path.exists(gencodeV29)
+while not os.path.exists(gencodeV29):
     time.sleep(1)
 ind_cmd='salmon index --gencode -t '+gencodeV29+'--i gencode_v29_index'
 os.system(ind_cmd)
