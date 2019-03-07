@@ -23,14 +23,21 @@ df = tbl.asDataFrame()
 format = lambda x: x.replace('.fastq.gz','').split('_')[5]
 df['id'] = df['name'].map(format)
 
+#first run the index file
+gencodeV29=syn.get('syn18134565').path
+while not os.path.exists(gencodeV29)
+    time.sleep(1)
+ind_cmd='salmon index --gencode -t '+gencodeV29+'--i gencode_v29_index'
+os.system(ind_cmd)
+
 grouped = df.groupby('id')
 for name, group in grouped:
     file_list_f1 = []
     file_list_f2 = []
     for index,row in group.iterrows():
-        temp = syn.get(row['id'],downloadLocation="./")
-        file_path = row['name']
-        os.rename(temp.path, file_path)
+        file_path = syn.get(row['id']).path
+#        file_path = row['name']
+#        os.rename(temp.path, file_path)
         while not os.path.exists(file_path):
             time.sleep(1)
         if re.search('_1_GSL',file_path):
@@ -45,16 +52,16 @@ for name, group in grouped:
 #    while not os.path.exists(f1) or not os.path.exists(f2):
 #        time.sleep(1)
     # remove fastq files
-#    for f in file_list_f1:
-#        os.remove(f)
-#    for f in file_list_f2:
-#        os.remove(f)
 
     # run salmon
     scmd='salmon quant -i gencode_v29_index -l A -1 '+" ".join(file_list_f1)+' -2 '+" ".join(file_list_f2)+' -o '+os.path.join("quants",name)
     log.debug(scmd)
     os.system(scmd)
- #   os.remove(f1)
+    for f in file_list_f1:
+        os.remove(f)
+    for f in file_list_f2:
+        os.remove(f)
+        #   os.remove(f1)
  #   os.remove(f2)
 
 # upload to Synpase
