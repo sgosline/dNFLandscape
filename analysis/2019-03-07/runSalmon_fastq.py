@@ -20,8 +20,8 @@ tbl = syn.tableQuery("SELECT specimenID,individualID,name,id,assay,dataType,sex,
 
 df = tbl.asDataFrame()
 
-format = lambda x: x.replace('.fastq.gz','').split('_')[5]
-df['samp'] = df['name'].map(format)
+#format = lambda x: x.replace('.fastq.gz','').split('_')[5]
+#df['samp'] = df['name'].map(format)
 
 #first run the index file
 gencodeV29=syn.get('syn18134565').path
@@ -32,44 +32,29 @@ print(ind_cmd)
 if not os.path.exists('gencode_v29_index'):
     os.system(ind_cmd)
 
-samp_ind={}
 
-grouped = df.groupby('samp')
+grouped = df.groupby('specimenID')
 for name, group in grouped:
     file_list_f1 = []
     file_list_f2 = []
     for index,row in group.iterrows():
         file_path = syn.get(row['id']).path
-        samp_ind[row['specimenID']]=name
-#        file_path = row['name']
-#        os.rename(temp.path, file_path)
+
         while not os.path.exists(file_path):
             time.sleep(1)
-        if re.search('_1_GSL',file_path):
+        if re.search('_1_GSL',file_path):##this needs to be customized, ideally
+                                        ##add mate 1/2 to annotations
             file_list_f1.append(file_path)
         else:
             file_list_f2.append(file_path)
-    # combine fastq files
-#    f1=os.path.join(name+'_1.fastq.gz')
-#    f2=os.path.join(name+'_2.fastq.gz')
-#    os.system("cat "+" ".join(file_list_f1)+" > "+f1)
-#    os.system("cat "+" ".join(file_list_f2)+" > "+f2)
-#    while not os.path.exists(f1) or not os.path.exists(f2):
-#        time.sleep(1)
-    # remove fastq files
 
     # run salmon
     scmd='./salmon quant -i gencode_v29_index -l A -1 '+" ".join(file_list_f1)+' -2 '+" ".join(file_list_f2)+' -o '+os.path.join("quants",name)
     print(scmd)
     log.debug(scmd)
-    if not os.path.exists(os.path.join('quants',name,'quant.sf')):  
+    if not os.path.exists(os.path.join('quants',name,'quant.sf')):
         os.system(scmd)
-#    for f in file_list_f1:
-#        os.remove(f)
-#    for f in file_list_f2:
-#        os.remove(f)
-        #   os.remove(f1)
- #   os.remove(f2)
+
 
 # upload to Synpase
 df.drop(columns=['id', 'name'],inplace=True)
@@ -82,7 +67,7 @@ format = lambda x: x.replace(' ','_')
 df = df.fillna('')
 
 for index,row in df.iterrows():
-    folder_name = format(samp_ind[row['specimenID']])
+    folder_name = format(row['specimenID'])
     annotations = row.to_dict()
     temp = File(path=os.path.join("quants",folder_name,"quant.sf"), name="_".join([folder_name,"Salmon_gencodeV29","quant.sf"]), annotations=annotations,parent='syn18407530')
     temp = syn.store(temp)
