@@ -16,7 +16,7 @@ log.setLevel(logging.INFO)
 
 syn = synapseclient.login()
 
-tbl = syn.tableQuery("SELECT specimenID,individualID,name,id FROM syn11614202 WHERE ( ( \"assay\" = 'rnaSeq' ) AND ( \"fileFormat\" = 'fastq' ) AND ( \"parentId\" = 'syn7979306' ) ) order by specimenID")
+tbl = syn.tableQuery("SELECT specimenID,individualID,name,id,assay,dataType,sex,dataSubtype,consortium,study,diagnosis,tumorType,isMultiIndividual,isMultiSpecimen,isCellLine,species,fundingAgency,resourceType,nf1Genotype,nf2Genotype,studyName FROM syn11614202 WHERE ( ( \"assay\" = 'rnaSeq' ) AND ( \"fileFormat\" = 'fastq' ) AND ( \"parentId\" = 'syn7979306' ) ) order by specimenID")
 
 df = tbl.asDataFrame()
 
@@ -32,12 +32,15 @@ print(ind_cmd)
 if not os.path.exists('gencode_v29_index'):
     os.system(ind_cmd)
 
+samp_ind={}
+
 grouped = df.groupby('samp')
 for name, group in grouped:
     file_list_f1 = []
     file_list_f2 = []
     for index,row in group.iterrows():
         file_path = syn.get(row['id']).path
+        samp_ind[row['specimenID']]=name
 #        file_path = row['name']
 #        os.rename(temp.path, file_path)
         while not os.path.exists(file_path):
@@ -59,16 +62,17 @@ for name, group in grouped:
     scmd='./salmon quant -i gencode_v29_index -l A -1 '+" ".join(file_list_f1)+' -2 '+" ".join(file_list_f2)+' -o '+os.path.join("quants",name)
     print(scmd)
     log.debug(scmd)
-    os.system(scmd)
-    for f in file_list_f1:
-        os.remove(f)
-    for f in file_list_f2:
-        os.remove(f)
+    if not os.path.exists(os.path.join('quants',name,'quant.sf')):  
+        os.system(scmd)
+#    for f in file_list_f1:
+#        os.remove(f)
+#    for f in file_list_f2:
+#        os.remove(f)
         #   os.remove(f1)
  #   os.remove(f2)
 
 # upload to Synpase
-df.drop(columns=['id', 'name', 'dataFileHandleId'],inplace=True)
+df.drop(columns=['id', 'name'],inplace=True)
 df.drop_duplicates(inplace=True)
 df.reset_index(drop=True,inplace=True)
 df['dataSubtype'] = 'processed'
@@ -78,8 +82,8 @@ format = lambda x: x.replace(' ','_')
 df = df.fillna('')
 
 for index,row in df.iterrows():
-    folder_name = format(row['specimenID'])
+    folder_name = format(samp_ind[row['specimenID']])
     annotations = row.to_dict()
-    temp = File(path=os.path.join("quants",folder_name,"quant.sf"), name="_".join([folder_name,"Salmon_gencodeV29","quant.sf"]), annotations=annotations,parent='syn17077846')
+    temp = File(path=os.path.join("quants",folder_name,"quant.sf"), name="_".join([folder_name,"Salmon_gencodeV29","quant.sf"]), annotations=annotations,parent='syn18407530')
     temp = syn.store(temp)
     print(temp.id)
