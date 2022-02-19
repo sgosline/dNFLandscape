@@ -1,8 +1,9 @@
 ###plotting of WGS variants
 
 source("../../dermalNF/bin/WGSData_VarDict.R")
-source('../../../dermalNF/bin/dermalNFData.R')
+source('../../dermalNF/bin/dermalNFData.R')
 source("../../bin/geneSampleMatrix.R")
+
 
 cancer.genes<-read.csv('../../data/Census_allTue Jan 19 18-58-56 2016.csv')
 if(!exists('expr.gene.muts05'))

@@ -1,5 +1,5 @@
 source("../../bin/wgsAnalysis.R")
-source("../../bin/geneSampleMatrix.R")
+source("../../analysis/2016-09-20/geneSampleMatrix.R")
 this.script='https://raw.githubusercontent.com/sgosline/dNFLandscape/master/analysis/2016-11-16/mutationStatTests.R'
 p05='syn6097853'
 p1='syn6099307'

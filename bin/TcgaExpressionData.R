@@ -3,7 +3,7 @@
 
 library(synapseClient)
 library(data.table)
-library(ggplot2)
+library(dplyr)
 synapseLogin()
 
 if(!exists('alldat')){
@@ -19,8 +19,15 @@ if(!exists('alldat')){
 #mut.pats=sapply(as.character(mut.data$Tumor),function(x) paste(unlist(strsplit(x,split='-'))[1:4],collapse='-'))
 #rna.pats<-sapply(colnames(alldat),function(x) paste(unlist(strsplit(x,split='-'))[1:4],collapse='-'))
 
-#if(!exists('pat.dis'))
-#  pat.dis<<-synTableQuery('SELECT acronym,samples from syn3281840')
+if(!exists('pat.dis')){
+  pat.dis<<-synTableQuery('SELECT acronym,samples from syn3281840')
+}
+
+samps <-pat.dis@values
+
 
 #tumsByDis<-sapply(unique(pat.dis@values$acronym),function(x) pat.dis@values$samples[which(pat.dis@values$acronym==x)])
 
+for(i in unique(samps$acronym)){
+  
+}

@@ -12,7 +12,7 @@ plotGeneAcrossScores<-function(patient.sample.vars,patient.sample.muts,geneName,
   overlap<-intersect(names(patient.sample.vars),colnames(patient.sample.muts))
   print(paste('We have',length(overlap),'samples to check for mutation correlates'))
   if(!geneName%in%rownames(patient.sample.muts))
-     return(data.frame())
+    return(data.frame())
   ##add patient to data frame
   df<-data.frame(geneMutated=patient.sample.muts[geneName,overlap],score=patient.sample.vars[overlap],patient=sapply(overlap,function(x) paste(unlist(strsplit(x,split=' '))[1:2],collapse=' ')))
   pval<-'1.0'
@@ -48,7 +48,7 @@ colnames(est.scores)<-tolower(patient_tumor_number_rna(colnames(est.scores),quan
 
 ####
 genelist=c('BCR','IDH1','BRD7','CDC27','CREBBP','ARMCX4','SLC6A6','SLK','MAML2')
-  cib.paths=c("Mast.cells.resting","Macrophages.M2")
+cib.paths=c("Mast.cells.resting","Macrophages.M2")
 #est.paths=c("ESTIMATEScore")
 
 for(gene in genelist){
@@ -63,10 +63,9 @@ for(gene in genelist){
   plotGeneAcrossScores(es,gl.vars.by.sample,gene,paste('EstimateGermline',sep='')) 
   plotGeneAcrossScores(es,som.vars,gene,paste('EstimateSomatic',sep='')) 
 }
-  allfiles<-list.files('.')[grep('score.png',list.files('.'),fixed=T)]
-  for(file in allfiles){
-      synStore(File(file,parentId='syn5605256'),executed=list(list(url=this.script)))
-  }
-  
+allfiles<-list.files('.')[grep('score.png',list.files('.'),fixed=T)]
+for(file in allfiles){
+  synStore(File(file,parentId='syn5605256'),executed=list(list(url=this.script)))
+}
 
 
