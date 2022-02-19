@@ -36,7 +36,6 @@ analysis/2016-11-21/*.txt
 
 
 # OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
-.httr-oauth
 
 # data files
 *.pdf
@@ -142,4 +141,4 @@ analysis/2017-07-20/CREBBP_pvalhallmarkSomatic.txt
 analysis/2017-07-20/CREBBP_pvalCIBERSORTSomatic.txt
 analysis/2017-07-20/CREBBP_CDC27_pvalCIBERSORTSomatic.txt
 *.txt
-.DS_Store
+.DS_store
